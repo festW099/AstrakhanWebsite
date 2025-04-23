@@ -1,0 +1,40 @@
+{% extends "pattern.html" %}
+{% block content %}
+<br><br><br>
+<h2 class="basket-title">Корзина</h2>
+
+{% if basket_items %}
+    <ul class="basket-items-list">
+        {% for item in basket_items %}
+        <li class="basket-item">
+            <img src="/static/photo/{{ item.photo }}" alt="{{ item.make }} {{ item.model }}" class="basket-item-img">
+            <p class="basket-item-info">
+                <span class="basket-item-name">{{ item.make }} {{ item.model }} — {{ item.price }} ₽</span><br>
+                Кол-во: {{ item.quantity }}<br>
+                Сумма: {{ item.total }} ₽
+            </p>
+            <div class="basket-item-actions">
+                <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="remove_type" value="one">
+                    <button type="submit" class="basket-remove-btn">Удалить одну</button>
+                </form>
+                <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="remove_type" value="all">
+                    <button type="submit" class="basket-remove-btn">Удалить все</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="basket-summary">
+        <h3>Итого: {{ total_price }} ₽</h3>
+        <form method="post" class="basket-action-form">
+            <button name="action" value="buy" class="basket-action-btn">Купить</button>
+            <button name="action" value="clear" class="basket-action-btn">Очистить корзину</button>
+        </form>
+    </div>
+{% else %}
+    <p>Корзина пуста</p>
+{% endif %}
+{% endblock %}

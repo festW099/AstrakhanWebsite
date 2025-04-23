@@ -1,0 +1,234 @@
+{% extends "pattern.html" %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<br><br><br><br><br><br>
+
+<!-- Приветственный блок -->
+<section class="container-first">
+    <img src="/static/web-photo/lamborginy_ph_cut" alt="Car Image" class="car-image">
+    <div>
+        <h1 class="first">
+            Добро пожаловать в <strong>PLATINUM</strong> — лидера в сфере подбора и продажи автомобилей премиум-класса.
+            Мы предлагаем не просто машины — мы дарим стиль жизни.
+        </h1>
+    </div>
+</section>
+
+<!-- О компании -->
+<section class="container-company mt-5 p-5 bg-light rounded shadow">
+    <h2 class="mb-4 text-center">О компании</h2>
+    <p>
+        <strong>PLATINUM</strong> — это больше, чем автосалон. Мы создаём уникальный клиентский опыт с 2002 года, специализируясь на продаже автомобилей премиум-класса. 
+        Наши клиенты ценят нас за персональный подход, прозрачность сделок и надёжное сопровождение на всех этапах покупки.
+    </p>
+    <p>
+        Мы работаем по всей России, а также напрямую сотрудничаем с авторитетными поставщиками из Европы, Японии и США. 
+        Наша миссия — сделать покупку автомобиля мечты максимально комфортной, безопасной и выгодной для вас.
+    </p>
+    <p>
+        Независимо от того, ищете ли вы эксклюзивную новинку или надёжный автомобиль с пробегом, команда PLATINUM поможет воплотить ваши желания в реальность.
+    </p>
+</section>
+
+
+<h1 class="feedback-plus show">Почему выбирают нас</h1>
+<div class="card-container">
+    <span class="card show highlight-card">
+        <div class="card-header"><h1>Надежность</h1></div>
+        <div class="card-body">
+            <i class="bi bi-shield-lock enlarged-icon golden-icon"></i>
+            <h2>100% юридическая чистота</h2>
+            <p>Мы проверяем историю каждого авто. Спокойствие — гарантировано.</p>
+        </div>
+    </span>
+
+    <span class="card show highlight-card">
+        <div class="card-header"><h1>Экспертиза</h1></div>
+        <div class="card-body">
+            <i class="bi bi-person-check enlarged-icon golden-icon"></i>
+            <h2>10+ лет в индустрии</h2>
+            <p>Сотрудники — признанные эксперты в подборе премиум-авто.</p>
+        </div>
+    </span>
+
+    <span class="card show highlight-card">
+        <div class="card-header"><h1>Индивидуальный подход</h1></div>
+        <div class="card-body">
+            <i class="bi bi-star enlarged-icon golden-icon"></i>
+            <h2>Каждый клиент — VIP</h2>
+            <p>Мы учитываем ваши цели, стиль и даже цвет настроения.</p>
+        </div>
+    </span>
+</div>
+
+<section class="client-quiz">
+    <h2>Какой автомобиль подходит вам?</h2>
+    <div class="quiz-options">
+        <div class="quiz-card">
+            <h3>Бизнесмен</h3>
+            <p>Mercedes, BMW, Lexus — стиль и статус без компромиссов.</p>
+        </div>
+        <div class="quiz-card">
+            <h3>Семейный</h3>
+            <p>Вместительные, безопасные и надёжные — от Audi до Volvo.</p>
+        </div>
+        <div class="quiz-card">
+            <h3>Адреналинщик</h3>
+            <p>Porsche, M-серия, AMG — скорость, рев мотора и драйв.</p>
+        </div>
+    </div>
+</section>
+
+<div class="info-card-container">
+    <div class="info-card left">
+        <div class="card-content">
+            <div class="info-card-tab">
+                <span>Команда</span>
+            </div>
+            <div class="text-content">
+                <h2>Наша команда</h2>
+                <p>В нашей компании работают настоящие профессионалы:</p>
+                <ul>
+                    <li><strong>Иван Алексеев</strong> — эксперт по подбору авто</li>
+                    <li><strong>Елена Морозова</strong> — юрист</li>
+                    <li><strong>Михаил Литвин</strong> — технический консультант</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card right">
+        <div class="card-content">
+            <div class="info-card-tab">
+                <span>Партнеры</span>
+            </div>
+            <div class="text-content">
+                <h2>Наши партнеры</h2>
+                <ul>
+                    <li><strong>AutoGroup</strong> — крупнейший автодилер в регионе</li>
+                    <li><strong>TechCorp</strong> — лидер в области автомобильных технологий</li>
+                    <li><strong>ServicePro</strong> — наши надежные поставщики запчастей</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-card center">
+        <div class="card-content">
+            <div class="info-card-tab">
+                <span>Услуги</span>
+            </div>
+            <div class="text-content">
+                <h2>Наши услуги</h2>
+                <ul>
+                    <li><strong>Консультации</strong> — помощь в подборе и покупке автомобилей</li>
+                    <li><strong>Оценка</strong> — оценка технического состояния автомобилей</li>
+                    <li><strong>Техническое обслуживание</strong> — сервисное обслуживание автомобилей</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="comparison-section">
+    <h2>Почему выбирают нас?</h2>
+    <table>
+        <tr>
+            <th></th>
+            <th>PLATINUM</th>
+            <th>Другие</th>
+        </tr>
+        <tr>
+            <td>Индивидуальный подход</td>
+            <td>✔</td>
+            <td>✖</td>
+        </tr>
+        <tr>
+            <td>Настоящая премиальность</td>
+            <td>✔</td>
+            <td>✔</td>
+        </tr>
+        <tr>
+            <td>Подбор без навязывания</td>
+            <td>✔</td>
+            <td>✖</td>
+        </tr>
+        <tr>
+            <td>Эстетика и кайф</td>
+            <td>✔</td>
+            <td>✔</td>
+        </tr>
+    </table>
+</section>
+
+<section class="dream-car-section">
+    <h2>Выберите автомобиль мечты</h2>
+    <div class="dream-car-options">
+        <a href="/" class="dream-car-option">
+            <img src="/static/web-photo/s-class.jpg" alt="Mercedes S-Class">
+            <span>Mercedes S-Class</span>
+        </a>
+        <a href="/" class="dream-car-option">
+            <img src="/static/web-photo/bmv-m8.jpg" alt="BMW M8">
+            <span>BMW M8</span>
+        </a>
+        <a href="/" class="dream-car-option">
+            <img src="/static/web-photo/porche-911.jpg" alt="Porsche 911">
+            <span>Porsche 911</span>
+        </a>
+    </div>
+</section>
+
+
+<section class="modern-quote show">
+    <p class="quote-text">Настоящая роскошь — это не цена. Это выбор.</p>
+    <p class="quote-author">— PLATINUM</p>
+</section>
+
+
+<h1 class="feedback show">Отзывы</h1>
+<div class="reviews-wrapper">
+    <div class="review-card">
+        <h4>Андрей К.</h4>
+        <p>Отличная компания! Привезли BMW X6 из Германии. Всё прозрачно и быстро. Рекомендую!</p>
+        <div class="stars">★★★★</div>
+    </div>
+    <div class="review-card">
+        <h4>Мария Л.</h4>
+        <p>Купила Audi A5. Очень довольна! Команда работает на совесть.</p>
+        <div class="stars">★★★★★</div>
+    </div>
+    <div class="review-card">
+        <h4>Олег С.</h4>
+        <p>Профессионалы. Помогли с подбором Porsche Cayenne, всё чётко.</p>
+        <div class="stars">★★★★★</div>
+    </div>
+    <div class="review-card">
+        <h4>Анна М.</h4>
+        <p>Сервис на высоте, чувствовала себя как VIP. Спасибо за Lexus RX!</p>
+        <div class="stars">★★★★★</div>
+    </div>
+    <div class="review-card">
+        <h4>Игорь Т.</h4>
+        <p>Очень понравился подход. Машина в идеале. Все документы подготовили быстро.</p>
+        <div class="stars">★★★★★</div>
+    </div>
+</div>
+
+<h2 class="feedback-form-title">Оставить отзыв</h2>
+<form class="feedback-form">
+    <input type="text" name="name" placeholder="Ваше имя" required>
+    <textarea name="review" placeholder="Ваш отзыв" rows="4" required></textarea>
+    <label for="rating">Рейтинг:</label>
+    <select name="rating" required>
+        <option value="5">5 — Отлично</option>
+        <option value="4">4 — Хорошо</option>
+        <option value="3">3 — Удовлетворительно</option>
+        <option value="2">2 — Плохо</option>
+        <option value="1">1 — Ужасно</option>
+    </select>
+    <button type="submit">Отправить</button>
+</form>
+
+{% endblock %}

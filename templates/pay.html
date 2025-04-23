@@ -1,0 +1,34 @@
+{% extends "pattern.html" %}
+{% block content %}
+<br> <br> <br> <br> <br>
+<div class="pay">
+    <div class="checkout-container">
+        <ul>
+            {% for item in basket_items %}
+                <li>
+                    <span>{{ item['name'] }} x{{ item['quantity'] }}</span>
+                    <span>{{ item['total'] }} ₽</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p>Итого: {{ total_price }} ₽</p>
+
+        <h2>Оплата</h2>
+        <form method="post">
+            <label>Номер карты:
+                <input type="text" name="card_number" placeholder="0000 0000 0000 0000" required>
+            </label>
+
+            <label>CVV:
+                <input type="text" name="cvv" placeholder="000" required>
+            </label>
+
+            <label>Срок действия:
+                <input type="text" name="expiry" placeholder="00/00" required>
+            </label>
+
+            <button type="submit">Оплатить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

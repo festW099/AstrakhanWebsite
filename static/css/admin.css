@@ -1,0 +1,92 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Roboto', sans-serif;
+}
+.admin-card {
+    max-width: 480px; 
+    margin: auto;
+    margin-top: 10vh;
+    border-radius: 20px;
+    transform: translateY(-50px); 
+    opacity: 0;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+.admin-card.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+.admin-card .card-header {
+    background-color: #1a1a1a;
+    color: white;
+}
+.admin-card .card-header h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.admin-card .card-body .form-group label {
+    font-weight: bold;
+}
+.admin-card .card-body .form-group input,
+.admin-card .card-body .form-group textarea {
+    width: calc(100% - 30px); 
+    max-width: 100%;
+    height: 45px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1.5px solid lightgrey;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0px 0px 20px -18px;
+}
+.admin-card .card-body .form-group input:hover,
+.admin-card .card-body .form-group textarea:hover {
+    border: 2px solid lightgrey;
+    box-shadow: 0px 0px 20px -17px;
+}
+.admin-card .card-body .form-group input:active,
+.admin-card .card-body .form-group textarea:active {
+    transform: scale(0.95);
+}
+.admin-card .card-body .form-group input:focus,
+.admin-card .card-body .form-group textarea:focus {
+    border: 2px solid grey;
+}
+.admin-card .card-body .btn {
+    border-radius: 10px;
+    background-color: #1a1a1a; 
+    border-color: #1a1a1a; 
+    color: white;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+.admin-card .card-body .btn:hover {
+    background-color: #333;
+    border-color: #333;
+}
+.admin-card .card-body .form-group .custom-control-input {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    transform: scale(0.7);
+    transition: transform 0.3s ease-in-out;
+}
+.custom-control-label {
+    accent-color: #1a1a1a;
+}
+.admin-card .card-body .form-group .custom-control-input:checked:before {
+    background-color: #1a1a1a; 
+    border-color: #1a1a1a; 
+}
+.admin-card .card-body .form-group .custom-control-input:checked:after {
+    border-color: #fff;
+}
+.admin-card .card-body .form-group .custom-control-label {
+    font-weight: normal;
+}
+
+.custom-control-input[type="checkbox"]:checked:before {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+.custom-control-input[type="checkbox"]:checked:after {
+    border-color: #fff;
+}

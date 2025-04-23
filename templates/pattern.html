@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATINUM</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/pattern.css">
+</head>
+<body>
+    <header>
+        <div class="header-container custom-header" id="headerContainer">
+            <nav class="navbar navbar-expand-md">
+                <a class="navbar-brand" href="/about">
+                    <i class="fas fa-gem" style="color: whitesmoke;"></i> PLATINUM
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> О нас</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/catalog"><i class="fas fa-th-large"></i> Каталог</a></li>
+                        <div class="basket-indicator">
+                            <li class="nav-item cart-icon"><a class="nav-link" href="/basket"><i class="fas fa-shopping-cart"></i> Корзина</a></li>
+                                {% if session.get('basket') %}
+                                    <span class="basket-count">{{ session['basket']|length }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        
+                        <li class="nav-item user-icon"><a class="nav-link" href="/admin"><i class="fas fa-user"></i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; PLATINUM <br>
+            Контактная информация <br>
+            <br>
+            Телефон: +7 (999) 999 99-99 <br>
+            Адрес: Владивосток ул. Океанский проспект 43 <br>
+            Электронная почта: platinum-cars@gmail.com <br>
+            <br>
+            &copy; 2025 PLATINUM. Все права защищены.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card admin-card shadow-lg" id="adminCard">
+                    <div class="card-header text-center">
+                        <h1>Добавить новую машину</h1>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="make">Марка:</label>
+                                <input type="text" class="form-control input" id="make" name="make" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="model">Модель:</label>
+                                <input type="text" class="form-control input" id="model" name="model" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="generation">Поколение:</label>
+                                <input type="text" class="form-control input" id="generation" name="generation" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Цена:</label>
+                                <input type="number" step="0.01" class="form-control input" id="price" name="price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="color">Цвет:</label>
+                                <input type="text" class="form-control input" id="color" name="color" required>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="used" name="used" value="True">
+                                    <label class="custom-control-label" for="used">Б/у</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="drive_type">Drive Type:</label>
+                                <input type="text" class="form-control input" id="drive_type" name="drive_type" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Фото:</label>
+                                <input type="file" id="photo" name="photo">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                document.getElementById('adminCard').classList.add('show');
+            }, 100);
+        });
+    </script>
+</body>
+</html>

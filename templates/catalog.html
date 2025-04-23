@@ -1,0 +1,100 @@
+{% extends "pattern.html" %}
+
+{% block content %}
+<br> <br> <br>
+<div class="catalog-container">
+    <div class="filter-section">
+        <h2>Фильтры</h2>
+        <form action="" method="GET">
+            <div class="filter-group">
+                <label for="make">Марка:</label>
+                <select id="make" name="make">
+                    <option value="">Выберите марку</option>
+                    {% for make in makes %}
+                        <option value="{{ make }}" {% if request.args.get('make') == make %}selected{% endif %}>{{ make }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="model">Модель:</label>
+                <select id="model" name="model">
+                    <option value="">Выберите модель</option>
+                    {% for model in models %}
+                        <option value="{{ model }}" {% if request.args.get('model') == model %}selected{% endif %}>{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Цена:</label>
+                <input type="range" name="price_min" min="0" max="{{ max_price }}" value="{{ request.args.get('price_min', 0) }}" oninput="priceMinOutput.value = this.value">
+                <input type="range" name="price_max" min="0" max="{{ max_price }}" value="{{ request.args.get('price_max', max_price) }}" oninput="priceMaxOutput.value = this.value">
+                <div style="display: flex; justify-content: space-between;">
+                    <output id="priceMinOutput">{{ request.args.get('price_min', 0) }}</output> ₽
+                    <output id="priceMaxOutput">{{ request.args.get('price_max', max_price) }}</output> ₽
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="color">Цвет:</label>
+                <select id="color" name="color">
+                    <option value="">Выберите цвет</option>
+                    {% for color in colors %}
+                        <option value="{{ color }}" {% if request.args.get('color') == color %}selected{% endif %}>{{ color }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="used">Состояние:</label>
+                <select id="used" name="used">
+                    <option value="">Все</option>
+                    <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанный</option>
+                    <option value="0" {% if request.args.get('used') == '0' %}selected{% endif %}>Новый</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="drive_type">Тип привода:</label>
+                <select id="drive_type" name="drive_type">
+                    <option value="">Выберите тип привода</option>
+                    <option value="Полный" {% if request.args.get('drive_type') == 'Полный' %}selected{% endif %}>Полный</option>
+                    <option value="Задний" {% if request.args.get('drive_type') == 'Задний' %}selected{% endif %}>Задний</option>
+                    <option value="Передний" {% if request.args.get('drive_type') == 'Передний' %}selected{% endif %}>Передний</option>
+                </select>
+            </div>
+
+            <div class="filter-buttons">
+                <button type="submit">Применить фильтры</button>
+            </div>
+            <div class="filter-buttons">
+                <a href="{{ url_for('catalog') }}" class="reset-button">Сбросить фильтры</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="catalog-results">
+        <h2>Каталог машин</h2>
+        <div class="car-cards">
+            {% for car in cars %}
+                <div class="car-card">
+                    <img src="/static/photo/{{ car.photo }}" alt="Фото {{ car.make }} {{ car.model }}" />
+                    <div class="car-details">
+                        <h3>{{ car.make }} {{ car.model }}</h3>
+                        <p>Поколение: {{ car.generation }}</p>
+                        <p>Цена: {{ car.price }} ₽</p>
+                        <p>Цвет: {{ car.color }}</p>
+                        <p>Состояние: {% if car.used %}Подержанный{% else %}Новый{% endif %}</p>
+                        <p>Тип привода: {{ car.drive_type }}</p>
+                        <form action="{{ url_for('add_to_basket', car_id=car.id) }}" method="post">
+                            <button type="submit" class="add-to-basket-btn">Добавить в корзину</button>
+                        </form>                        
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
