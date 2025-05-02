@@ -155,7 +155,7 @@
             <td>✖</td>
         </tr>
         <tr>
-            <td>Эстетика и кайф</td>
+            <td>Эстетика</td>
             <td>✔</td>
             <td>✔</td>
         </tr>
@@ -186,6 +186,35 @@
     <p class="quote-author">— PLATINUM</p>
 </section>
 
+<!-- Блок "Остались вопросы?" -->
+<section class="contact-questions">
+    <div class="questions-container">
+        <h2>Остались вопросы?</h2>
+        <p class="questions-subtitle">Оставьте номер телефона, и наш специалист свяжется с вами в течение 15 минут</p>
+        
+        <form class="phone-form">
+            <div class="input-group">
+                <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required>
+                <button type="submit" class="gold-button">
+                    <i class="bi bi-telephone"></i> Перезвоните мне
+                </button>
+            </div>
+            <div class="privacy-notice">
+                <input type="checkbox" id="agree" required checked>
+                <label for="agree">Я согласен на обработку персональных данных</label>
+            </div>
+        </form>
+        
+        <div class="alternative-contact">
+            <p>Или свяжитесь с нами другим удобным способом:</p>
+            <div class="contact-icons">
+                <a href="#" class="contact-icon"><i class="bi bi-whatsapp"></i></a>
+                <a href="#" class="contact-icon"><i class="bi bi-telegram"></i></a>
+                <a href="#" class="contact-icon"><i class="bi bi-envelope"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <h1 class="feedback show">Отзывы</h1>
 <div class="reviews-wrapper">
@@ -230,5 +259,4 @@
     </select>
     <button type="submit">Отправить</button>
 </form>
-
 {% endblock %}

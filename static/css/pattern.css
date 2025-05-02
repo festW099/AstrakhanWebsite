@@ -1083,3 +1083,83 @@ p {
 .pay button:hover {
     background: #333;
 }
+
+.contact-questions {
+    background-color: #f8f9fa;
+    padding: 60px 20px;
+    margin: 50px 0;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.questions-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.questions-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.phone-form {
+    margin: 0 auto 30px;
+    max-width: 500px;
+}
+
+.input-group {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+}
+
+.gold-button {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.gold-button:hover {
+    background-color: #000000;
+}
+
+.privacy-notice {
+    text-align: left;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.alternative-contact {
+    margin-top: 30px;
+}
+
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.contact-icon {
+    color: #000000;
+    font-size: 24px;
+    transition: transform 0.3s;
+}
+
+.contact-icon:hover {
+    transform: scale(1.2);
+}
