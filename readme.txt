@@ -31,7 +31,7 @@ pip install flask
 
 Удачной проверки)
 
-English version(may be my work cheking engligh teacher) )
+English version(maybe  English teacher is checking my work) )
 Are you going to check my work now? :)
 If the answer is yes, then I’ll give you a quick briefing on how everything works and how to launch it.
 Launch Instructions:
