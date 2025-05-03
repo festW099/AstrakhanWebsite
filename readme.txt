@@ -29,6 +29,13 @@ Password:
 Если всё таки каких-то библиотек нет, то можете их установить:
 pip install flask
 
+P.s. честно, я пытался понять, что вы имели ввиду под фразой "(название: «Фамилия участника.web»)", поэтому я отправил вам файлик с дизайном в figma, а если вы имели ввиду назвать так архив, то расширение у него будет .zip. И на всякий случай я оставлю ссылку на сам figma проект, а также будет фотка с User flow на всякий случай)
+
+https://www.figma.com/design/qYAy9NdqyRjFNs13hXl8iy/Astrahan_website?node-id=0-1&t=k53YT50pljUa9YV6-1
+
+И если вам интересно, как формировался проект, то вот вам ссылочка на гит хаб)
+https://github.com/festW099/AstrakhanWebsite.git
+
 Удачной проверки)
 
 English version(maybe  English teacher is checking my work) )
