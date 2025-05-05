@@ -36,7 +36,9 @@ https://www.figma.com/design/qYAy9NdqyRjFNs13hXl8iy/Astrahan_website?node-id=0-1
 И если вам интересно, как формировался проект, то вот вам ссылочка на гит хаб)
 https://github.com/festW099/AstrakhanWebsite.git
 
-Удачной проверки)
+Удачной проверк
+
+Я ЗАБЫЛ НАПИСАТЬ, ЧТО ИЗМЕНИЛ ПОРТ ДЛЯ ПОДКЛЮЧЕНИЯ. ПОДКЛЮЧАЙТЕСЬ К ПОРТУ 2709
 
 English version(maybe  English teacher is checking my work) )
 Are you going to check my work now? :)
