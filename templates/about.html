@@ -1,1093 +1,825 @@
 {% extends "pattern.html" %}
 
 {% block content %}
-<style>
-    :root {
-        --primary-bg: #ffffff;
-        --secondary-bg: #f4f4f4;
-        --card-bg: #eaeaea;
-        --text-primary: #000000;
-        --text-secondary: #666666;
-        --accent-color: #dfdfdf;
-        --gold-accent: #ffc107;
-        --border-color: #dcdcdc;
-    }
 
-    .card-header {
-        background-color: #000000;
-        border-radius: 0 0 12px 12px;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATINUM - Автомобили премиум-класса</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --gold: #000000;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
         
-    }
-
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-        background-color: var(--primary-bg);
-        color: var(--text-primary);
-        margin: 0;
-        padding: 0;
-        -webkit-font-smoothing: antialiased;
-    }
-
-    /* iOS-style animations */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes scaleIn {
-        from { transform: scale(0.95); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-        100% { transform: scale(1); }
-    }
-
-    .show {
-        animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .container-first {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8rem 10%;
-        background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .container-first::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-    }
-
-    .car-image {
-        width: 50%;
-        height: auto;
-        object-fit: cover;
-        border-radius: 12px;
-        filter: grayscale(30%) contrast(110%);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        transform: perspective(1000px) rotateY(-10deg);
-        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        animation: scaleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .car-image:hover {
-        transform: perspective(1000px) rotateY(0deg);
-        filter: grayscale(0%) contrast(120%);
-    }
-
-    .first {
-        font-size: 2.2rem;
-        font-weight: 600;
-        margin-left: 3rem;
-        line-height: 1.4;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        opacity: 0;
-        animation: fadeIn 0.8s 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .first strong {
-        font-weight: 700;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .container-company {
-        max-width: 80%;
-        margin: 5rem auto;
-        padding: 3rem;
-        background-color: var(--card-bg);
-        border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        border: 1px solid var(--border-color);
-        opacity: 0;
-        animation: fadeIn 0.8s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .feedback-plus {
-        text-align: center;
-        font-size: 2.8rem;
-        font-weight: 700;
-        margin: 6rem 0 4rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        opacity: 0;
-        animation: fadeIn 0.8s 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .card-container {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 2rem;
-        padding: 0 10%;
-        margin-bottom: 8rem;
-    }
-
-    .card {
-        flex: 1;
-        min-width: 300px;
-        background: var(--card-bg);
-        border-radius: 14px;
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    .card:nth-child(1) { animation: fadeIn 0.6s 0.8s forwards; }
-    .card:nth-child(2) { animation: fadeIn 0.6s 1s forwards; }
-    .card:nth-child(3) { animation: fadeIn 0.6s 1.2s forwards; }
-
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        border-color: rgba(0,0,0,0.1);
-    }
-
-    .card-header h1 {
-        text-align: center;
-        color: #ffffff;
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 2rem;
-    }
-
-    .card-body {
-        text-align: center;
-    }
-
-    .enlarged-icon {
-        font-size: 3.5rem;
-        margin-bottom: 2rem;
-        display: block;
-        transition: transform 0.3s ease;
-    }
-
-    .card:hover .enlarged-icon {
-        transform: scale(1.1);
-    }
-
-    .golden-icon {
-        background: linear-gradient(135deg, var(--gold-accent), #ffcc00);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .card-body h2 {
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        color: var(--text-primary);
-    }
-
-    .card-body p {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-
-    .client-quiz {
-        max-width: 80%;
-        margin: 8rem auto;
-        text-align: center;
-    }
-
-    .client-quiz h2 {
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin-bottom: 4rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .quiz-options {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .quiz-card {
-        flex: 1;
-        min-width: 280px;
-        padding: 2.5rem;
-        background: var(--card-bg);
-        border-radius: 14px;
-        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-
-    .quiz-card:hover {
-        transform: translateY(-8px);
-        background: #e0e0e0;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
-
-    .quiz-card h3 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: var(--text-primary);
-    }
-
-    .quiz-card p {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-
-    .info-card-container {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 2rem;
-        padding: 0 10%;
-        margin: 8rem 0;
-    }
-
-    .info-card {
-        flex: 1;
-        min-width: 320px;
-        position: relative;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    .info-card:nth-child(1) { animation: fadeIn 0.6s 1.4s forwards; }
-    .info-card:nth-child(2) { animation: fadeIn 0.6s 1.6s forwards; }
-    .info-card:nth-child(3) { animation: fadeIn 0.6s 1.8s forwards; }
-
-    .info-card.left, .info-card.right, .info-card.center {
-        background: var(--card-bg);
-        border-radius: 14px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        overflow: hidden;
-    }
-
-    .card-content {
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-    }
-
-    .info-card-tab {
-        text-align: center;
-        background: #000000;
-        padding: 0.8rem 1.5rem;
-        border-radius: 0 0 12px 12px;
-        font-weight: 600;
-        color: rgb(255, 255, 255);
-    }
-
-    .info-card h2 {
-        padding-top: 1.5rem;
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-
-    .info-card ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .info-card li {
-        margin-bottom: 1.5rem;
-        padding-left: 2rem;
-        position: relative;
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        line-height: 1.6;
-    }
-
-    .info-card li:before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        color: var(--accent-color);
-        font-size: 1.5rem;
-        line-height: 1;
-    }
-
-    .info-card li strong {
-        font-weight: 600;
-    }
-
-    .comparison-section {
-        max-width: 50%;
-        margin: 8rem auto;
-        text-align: center;
-    }
-
-    .comparison-section h2 {
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin-bottom: 4rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0 auto;
-        background: var(--card-bg);
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-
-    th, td {
-        padding: 1.5rem;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    th {
-        font-weight: 600;
-        color: var(--text-primary);
-        background: rgba(0,0,0,0.05);
-    }
-
-    td {
-        color: var(--text-secondary);
-    }
-
-    tr:last-child td {
-        border-bottom: none;
-    }
-
-    tr:hover {
-        background: rgba(0,0,0,0.03);
-    }
-
-    .dream-car-section {
-        max-width: 80%;
-        margin: 8rem auto;
-        text-align: center;
-    }
-
-    .dream-car-section h2 {
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin-bottom: 4rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .dream-car-options {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .dream-car-option {
-        flex: 1;
-        min-width: 280px;
-        position: relative;
-        overflow: hidden;
-        border-radius: 14px;
-        transform: perspective(1000px);
-        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
-
-    .dream-car-option:hover {
-        transform: perspective(1000px) translateY(-10px) rotateX(5deg);
-        box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-    }
-
-    .dream-car-option img {
-        width: 100%;
-        height: 280px;
-        object-fit: cover;
-        filter: grayscale(20%) contrast(110%) brightness(0.8);
-        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .dream-car-option:hover img {
-        filter: grayscale(0%) contrast(120%) brightness(1);
-        transform: scale(1.05);
-    }
-
-    .dream-car-option span {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(transparent, rgba(0,0,0,0.8));
-        color: var(--text-primary);
-        padding: 1.5rem;
-        font-weight: 700;
-        font-size: 1.3rem;
-    }
-
-    .modern-quote {
-        max-width: 60%;
-        margin: 10rem auto;
-        text-align: center;
-        padding: 4rem;
-        background: var(--card-bg);
-        border-radius: 14px;
-        border: 1px solid #dfdfdf;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .modern-quote::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 15px;
-        height: 100%;
-        background: linear-gradient(to bottom, #000000, #080808);
-    }
-
-    .quote-text {
-        font-size: 2rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        line-height: 1.4;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .quote-author {
-        font-size: 1.2rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-
-    .contact-questions {
-        max-width: 60%;
-        margin: 10rem auto;
-        text-align: center;
-        padding: 4rem;
-        background: var(--card-bg);
-        border-radius: 14px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
-
-    .contact-questions h2 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: var(--text-primary);
-    }
-
-    .questions-subtitle {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        margin-bottom: 3rem;
-        line-height: 1.6;
-    }
-
-    .phone-form {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .input-group {
-        display: flex;
-        margin-bottom: 1.5rem;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-
-    .input-group input {
-        flex: 1;
-        padding: 1.2rem;
-        border: none;
-        font-size: 1.1rem;
-        background: #f4f4f4;
-        color: var(--text-primary);
-    }
-
-    .input-group input::placeholder {
-        color: #999999;
-    }
-
-    .gold-button {
-        background: linear-gradient(135deg, var(--accent-color), #d4d4d4);
-        color: var(--text-primary);
-        border: none;
-        padding: 0 2rem;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .gold-button:hover {
-        background: linear-gradient(135deg, #e7e7e7, var(--accent-color));
-    }
-
-    .privacy-notice {
-        display: flex;
-        align-items: center;
-        margin-bottom: 3rem;
-        justify-content: center;
-    }
-
-    .privacy-notice input {
-        margin-right: 0.8rem;
-        accent-color: var(--accent-color);
-    }
-
-    .privacy-notice label {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-
-    .alternative-contact p {
-        margin-bottom: 1.5rem;
-        color: var(--text-secondary);
-    }
-
-    .contact-icons {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-    }
-
-    .contact-icon {
-        color: var(--text-primary);
-        font-size: 1.8rem;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: rgba(0,0,0,0.1);
-    }
-
-    .contact-icon:hover {
-        color: var(--text-primary);
-        background: var(--accent-color);
-        transform: translateY(-3px);
-    }
-
-    .feedback {
-        text-align: center;
-        font-size: 2.8rem;
-        font-weight: 700;
-        margin: 10rem 0 5rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .reviews-wrapper {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 2rem;
-        padding: 0 10%;
-        margin-bottom: 8rem;
-    }
-
-    .review-card {
-        flex: 1;
-        min-width: 280px;
-        padding: 2.5rem;
-        background: var(--card-bg);
-        border-radius: 14px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .review-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        border-color: rgba(0,0,0,0.1);
-    }
-
-    .review-card h4 {
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: var(--text-primary);
-    }
-
-    .review-card p {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    .stars {
-        color: var(--gold-accent);
-        font-size: 1.4rem;
-        letter-spacing: 2px;
-    }
-
-    .feedback-form-title {
-        text-align: center;
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin: 8rem 0 3rem;
-        background: linear-gradient(90deg, #000000, #666666);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .feedback-form {
-        max-width: 600px;
-        margin: 0 auto 10rem;
-        padding: 3rem;
-        background: var(--card-bg);
-        border-radius: 14px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
-
-    .feedback-form input,
-    .feedback-form textarea,
-    .feedback-form select {
-        width: 100%;
-        padding: 1.2rem;
-        margin-bottom: 2rem;
-        background: #f4f4f4;
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        font-size: 1.1rem;
-        color: var(--text-primary);
-    }
-
-    .feedback-form textarea {
-        min-height: 150px;
-        resize: vertical;
-    }
-
-    .feedback-form label {
-        display: block;
-        margin-bottom: 0.8rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-
-    .feedback-form button {
-        width: 100%;
-        padding: 1.3rem;
-        background: linear-gradient(135deg, var(--accent-color), #ffffff);
-        color: var(--text-primary);
-        border: none;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(229, 229, 230, 0.3);
-    }
-
-    .feedback-form button:hover {
-        background: linear-gradient(135deg, #ffffff, var(--accent-color));
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(177, 177, 177, 0.4);
-    }
-
-    /* iOS-style scroll animations */
-    @media (prefers-reduced-motion: no-preference) {
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: white;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+        }
+        
+        strong {
+            font-weight: 700;
+        }
+        
+        /* Анимации */
         .scroll-animate {
             opacity: 0;
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-
-        .scroll-animate.visible {
+        
+        .animate-from-bottom {
+            transform: translateY(30px);
+        }
+        
+        .animate-from-left {
+            transform: translateX(-30px);
+        }
+        
+        .animate-from-right {
+            transform: translateX(30px);
+        }
+        
+        .animate-from-top {
+            transform: translateY(-30px);
+        }
+        
+        .animate-visible {
             opacity: 1;
-            transform: none;
+            transform: translate(0, 0) !important;
         }
-
-        .animate-from-left { transform: translateX(-30px); }
-        .animate-from-right { transform: translateX(30px); }
-        .animate-from-bottom { transform: translateY(30px); }
-    }
-
-    @media (max-width: 1024px) {
+        
+        /* Приветственный блок */
         .container-first {
+            display: flex;
             flex-direction: column;
-            padding: 6rem 5%;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+                        url('/static/web-photo/lamborginy_ph_cut') center/cover no-repeat;
         }
-
+        
         .car-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .first {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+        
+        /* О компании */
+        .container-company {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+        
+        .container-company p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Карточки преимуществ */
+        .feedback-plus {
+            text-align: center;
+            margin: 4rem 0;
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+        
+        .card {
+            flex: 1 1 300px;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: var(--dark);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .card-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .enlarged-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .golden-icon {
+            color: var(--gold);
+        }
+        
+        /* Викторина */
+        .client-quiz {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .quiz-card {
+            flex: 1 1 300px;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Информационные карточки */
+        .info-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+        
+        .info-card {
+            flex: 1 1 350px;
+            max-width: 380px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .info-card-tab {
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem 2rem;
+            display: inline-block;
+            border-radius: 0 0 12px 0;
+            font-weight: 600;
+        }
+        
+        .text-content {
+            padding: 2rem;
+        }
+        
+        .text-content ul {
+            padding-left: 1.5rem;
+        }
+        
+        .text-content li {
+            margin-bottom: 0.8rem;
+        }
+        
+        /* Таблица сравнения */
+        .comparison-section {
+            max-width: 800px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        table {
             width: 100%;
-            margin-bottom: 3rem;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-
-        .first {
-            margin-left: 0;
-            font-size: 1.8rem;
-        }
-
-        .container-company, 
-        .client-quiz,
-        .comparison-section,
-        .dream-car-section,
-        .modern-quote,
-        .contact-questions {
-            max-width: 90%;
-        }
-
-        .card-container, 
-        .info-card-container,
-        .reviews-wrapper {
-            padding: 0 5%;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .first {
-            font-size: 1.6rem;
-        }
-
-        .feedback-plus,
-        .client-quiz h2,
-        .comparison-section h2,
-        .dream-car-section h2,
-        .feedback,
-        .feedback-form-title {
-            font-size: 2rem;
-        }
-
-        .modern-quote {
-            padding: 3rem 2rem;
-        }
-
-        .quote-text {
-            font-size: 1.6rem;
-        }
-
-        .contact-questions {
-            padding: 3rem;
-        }
-
-        .input-group {
-            flex-direction: column;
-        }
-
-        .gold-button {
+        
+        th, td {
             padding: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid #eee;
         }
-    }
-</style>
+        
+        th {
+            background-color: var(--dark);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Автомобили мечты */
+        .dream-car-section {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        .dream-car-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .dream-car-option {
+            flex: 1 1 300px;
+            max-width: 350px;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+        
+        .dream-car-option:hover {
+            transform: translateY(-5px);
+        }
+        
+        .dream-car-option img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease; /* Плавное увеличение за 0.3 секунды */
+        }
 
-<script>
-    // Intersection Observer for scroll animations
-    document.addEventListener('DOMContentLoaded', function() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+        .dream-car-option img:hover {
+            transform: scale(1.05); /* Увеличиваем изображение на 5% */
+        }
         
-        document.querySelectorAll('.scroll-animate').forEach(el => {
-            observer.observe(el);
-        });
+        .dream-car-option span {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
         
-        // Add hover effect to cards
-        document.querySelectorAll('.card, .quiz-card, .review-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px)';
-                this.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+        /* Цитата */
+        .modern-quote {
+            max-width: 800px;
+            margin: 5rem auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .quote-text {
+            font-size: 1.8rem;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .quote-author {
+            font-weight: 600;
+            color: var(--gold);
+        }
+        
+        /* Контакты */
+        .contact-questions {
+            max-width: 800px;
+            margin: 5rem auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .questions-subtitle {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .phone-form {
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .input-group input {
+            flex: 1 1 300px;
+            max-width: 400px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .gold-button {
+            background-color: var(--gold);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .gold-button:hover {
+            background-color: #c9a227;
+            transform: translateY(-2px);
+        }
+        
+        .privacy-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .contact-icon {
+            color: var(--dark);
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+        
+        .contact-icon:hover {
+            color: var(--gold);
+            transform: translateY(-3px);
+        }
+        
+        /* Отзывы */
+        .feedback, .feedback-form-title {
+            text-align: center;
+            margin: 4rem 0;
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+        
+        .reviews-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+        
+        .review-card {
+            flex: 1 1 300px;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .review-card h4 {
+            margin-top: 0;
+            color: var(--dark);
+        }
+        
+        .stars {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        /* Форма отзыва */
+        .feedback-form {
+            max-width: 600px;
+            margin: 0 auto 5rem;
+            padding: 0 2rem;
+        }
+        
+        .feedback-form input,
+        .feedback-form textarea,
+        .feedback-form select {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .feedback-form textarea {
+            min-height: 150px;
+        }
+        
+        .feedback-form button {
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .feedback-form button:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .first {
+                font-size: 1.8rem;
+            }
+            
+            .feedback-plus, .feedback, .feedback-form-title {
+                font-size: 2rem;
+            }
+            
+            .quote-text {
+                font-size: 1.5rem;
+            }
+        }
+        /* Скрываем стандартный чекбокс */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            top: -4px;
+        }
+
+        /* Кастомный чекбокс (увеличен в 2 раза и черный) */
+        input[type="checkbox"]::before {
+            content: "";
+            display: block;
+            width: 20px;  /* Размер в 2 раза больше стандартного (обычно ~10px) */
+            height: 20px;
+            border: 2px solid black;
+            background-color: white;
+            border-radius: 3px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Галочка (черная) */
+        input[type="checkbox"]:checked::after {
+            content: "✓";
+            display: block;
+            color: black;
+            font-size: 16px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Увеличение при наведении (опционально) */
+        input[type="checkbox"]:hover::before {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Приветственный блок -->
+    <section class="container-first scroll-animate animate-from-bottom">
+        <div>
+            <h1 class="first">
+                Добро пожаловать в <strong>PLATINUM</strong> — лидера в сфере подбора и продажи автомобилей премиум-класса.
+                Мы предлагаем не просто машины — мы дарим стиль жизни.
+            </h1>
+        </div>
+    </section>
+
+    <!-- О компании -->
+    <section class="container-company scroll-animate animate-from-bottom">
+        <h2 class="mb-4 text-center">О компании</h2>
+        <p>
+            <strong>PLATINUM</strong> — это больше, чем автосалон. Мы создаём уникальный клиентский опыт с 2002 года, специализируясь на продаже автомобилей премиум-класса. 
+            Наши клиенты ценят нас за персональный подход, прозрачность сделок и надёжное сопровождение на всех этапах покупки.
+        </p>
+    </section>
+
+    <section class="client-quiz scroll-animate animate-from-bottom">
+        <h2>Какой автомобиль подходит вам?</h2>
+        <div class="quiz-options">
+            <div class="quiz-card scroll-animate animate-from-left">
+                <h3>Бизнесмен</h3>
+                <p>Mercedes, BMW, Lexus — стиль и статус без компромиссов.</p>
+            </div>
+            <div class="quiz-card scroll-animate animate-from-bottom">
+                <h3>Семейный</h3>
+                <p>Вместительные, безопасные и надёжные — от Audi до Volvo.</p>
+            </div>
+            <div class="quiz-card scroll-animate animate-from-right">
+                <h3>Гонщик</h3>
+                <p>Porsche, M-серия, AMG — скорость, рев мотора и драйв.</p>
+            </div>
+        </div>
+    </section>
+
+    <h1 class="feedback-plus scroll-animate animate-from-bottom">Почему выбирают нас</h1>
+    <div class="card-container">
+        <span class="card scroll-animate animate-from-left">
+            <div class="card-header"><h1>Надежность</h1></div>
+            <div class="card-body">
+                <i class="bi bi-shield-lock enlarged-icon golden-icon"></i>
+                <h2>100% юридическая чистота</h2>
+                <p>Мы проверяем историю каждого авто. Спокойствие — гарантировано.</p>
+            </div>
+        </span>
+
+        <span class="card scroll-animate animate-from-bottom">
+            <div class="card-header"><h1>Экспертиза</h1></div>
+            <div class="card-body">
+                <i class="bi bi-person-check enlarged-icon golden-icon"></i>
+                <h2>10+ лет в индустрии</h2>
+                <p>Сотрудники — признанные эксперты в подборе премиум-авто.</p>
+            </div>
+        </span>
+
+        <span class="card scroll-animate animate-from-right">
+            <div class="card-header"><h1>Подход</h1></div>
+            <div class="card-body">
+                <i class="bi bi-star enlarged-icon golden-icon"></i>
+                <h2>Каждый клиент — VIP</h2>
+                <p>Мы учитываем ваши цели, стиль и даже цвет настроения.</p>
+            </div>
+        </span>
+    </div>
+
+    <div class="info-card-container">
+        <div class="info-card left scroll-animate animate-from-left">
+            <div class="card-content">
+                <div class="info-card-tab">
+                    <span>Команда</span>
+                </div>
+                <div class="text-content">
+                    <p>В нашей компании работают настоящие профессионалы:</p>
+                    <ul>
+                        <li><strong>Иван Алексеев</strong> — эксперт по подбору авто</li>
+                        <li><strong>Елена Морозова</strong> — юрист</li>
+                        <li><strong>Михаил Литвин</strong> — технический консультант</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card right scroll-animate animate-from-right">
+            <div class="card-content">
+                <div class="info-card-tab">
+                    <span>Партнеры</span>
+                </div>
+                <div class="text-content">
+                    <ul>
+                        <li><strong>AutoGroup</strong> — крупнейший автодилер в регионе</li>
+                        <li><strong>TechCorp</strong> — лидер в области автомобильных технологий</li>
+                        <li><strong>ServicePro</strong> — наши надежные поставщики запчастей</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card center scroll-animate animate-from-bottom">
+            <div class="card-content">
+                <div class="info-card-tab">
+                    <span>Услуги</span>
+                </div>
+                <div class="text-content">
+                    <ul>
+                        <li><strong>Консультации</strong> — помощь в подборе и покупке автомобилей</li>
+                        <li><strong>Оценка</strong> — оценка технического состояния автомобилей</li>
+                        <li><strong>Техническое обслуживание</strong> — сервисное обслуживание автомобилей</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="comparison-section scroll-animate animate-from-bottom">
+        <h2>Почему выбирают нас?</h2>
+        <table>
+            <tr>
+                <th></th>
+                <th>PLATINUM</th>
+                <th>Другие</th>
+            </tr>
+            <tr>
+                <td>Индивидуальный подход</td>
+                <td>✔</td>
+                <td>✖</td>
+            </tr>
+            <tr>
+                <td>Настоящая премиальность</td>
+                <td>✔</td>
+                <td>✔</td>
+            </tr>
+            <tr>
+                <td>Подбор без навязывания</td>
+                <td>✔</td>
+                <td>✖</td>
+            </tr>
+            <tr>
+                <td>Эстетика</td>
+                <td>✔</td>
+                <td>✔</td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="dream-car-section scroll-animate animate-from-bottom">
+        <h2>Выберите автомобиль мечты</h2>
+        <div class="dream-car-options">
+            <a href="/" class="dream-car-option scroll-animate animate-from-left">
+                <img src="/static/web-photo/s-class.jpg" alt="Mercedes S-Class">
+            </a>
+            <a href="/" class="dream-car-option scroll-animate animate-from-bottom">
+                <img src="/static/web-photo/bmv-m8.jpg" alt="BMW M8">
+            </a>
+            <a href="/" class="dream-car-option scroll-animate animate-from-right">
+                <img src="/static/web-photo/porche-911.jpg" alt="Porsche 911">
+            </a>
+        </div>
+    </section>
+
+    <section class="modern-quote scroll-animate animate-from-bottom">
+        <p class="quote-text">Настоящая роскошь — это не цена. Это выбор.</p>
+        <p class="quote-author">— PLATINUM</p>
+    </section>
+
+    <!-- Блок "Остались вопросы?" -->
+    <section class="contact-questions scroll-animate animate-from-bottom">
+        <div class="questions-container">
+            <h2>Остались вопросы?</h2>
+            <p class="questions-subtitle">Оставьте номер телефона, и наш специалист свяжется с вами в течение 15 минут</p>
+            
+            <form class="phone-form">
+                <div class="input-group">
+                    <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required>
+                    <button type="submit" class="gold-button">
+                        <i class="bi bi-telephone"></i> Перезвоните мне
+                    </button>
+                </div>
+                <div class="privacy-notice">
+                    <input type="checkbox" id="agree" required checked>
+                    <label for="agree">Я согласен на обработку персональных данных</label>
+                </div>
+            </form>
+            
+            <div class="alternative-contact">
+                <p>Или свяжитесь с нами другим удобным способом:</p>
+                <div class="contact-icons">
+                    <a href="#" class="contact-icon"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" class="contact-icon"><i class="bi bi-telegram"></i></a>
+                    <a href="#" class="contact-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <h1 class="feedback scroll-animate animate-from-bottom">Отзывы</h1>
+    <div class="reviews-wrapper">
+        <div class="review-card scroll-animate animate-from-left">
+            <h4>Андрей К.</h4>
+            <p>Отличная компания! Привезли BMW X6 из Германии. Всё прозрачно и быстро. Рекомендую!</p>
+            <div class="stars">★★★★</div>
+        </div>
+        <div class="review-card scroll-animate animate-from-bottom">
+            <h4>Мария Л.</h4>
+            <p>Купила Audi A5. Очень довольна! Команда работает на совесть.</p>
+            <div class="stars">★★★★★</div>
+        </div>
+        <div class="review-card scroll-animate animate-from-right">
+            <h4>Олег С.</h4>
+            <p>Профессионалы. Помогли с подбором Porsche Cayenne, всё чётко.</p>
+            <div class="stars">★★★★★</div>
+        </div>
+        <div class="review-card scroll-animate animate-from-left">
+            <h4>Анна М.</h4>
+            <p>Сервис на высоте. Спасибо за Lexus RX!</p>
+            <div class="stars">★★★★★</div>
+        </div>
+        <div class="review-card scroll-animate animate-from-bottom">
+            <h4>Игорь Т.</h4>
+            <p>Очень понравился подход. Машина в идеале. Все документы подготовили быстро.</p>
+            <div class="stars">★★★★★</div>
+        </div>
+    </div>
+
+    <h2 class="feedback-form-title scroll-animate animate-from-bottom">Оставить отзыв</h2>
+    <form class="feedback-form scroll-animate animate-from-bottom">
+        <input type="text" name="name" placeholder="Ваше имя" required>
+        <textarea name="review" placeholder="Ваш отзыв" rows="4" required></textarea>
+        <label for="rating">Рейтинг:</label>
+        <select name="rating" required>
+            <option value="5">5 — Отлично</option>
+            <option value="4">4 — Хорошо</option>
+            <option value="3">3 — Удовлетворительно</option>
+            <option value="2">2 — Плохо</option>
+            <option value="1">1 — Ужасно</option>
+        </select>
+        <button type="submit">Отправить</button>
+    </form>
+
+    <script>
+        // Анимация при скролле
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.scroll-animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
             });
             
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-                this.style.boxShadow = '';
+            animateElements.forEach(element => {
+                observer.observe(element);
             });
         });
-    });
-</script>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-<!-- Приветственный блок -->
-<section class="container-first scroll-animate animate-from-bottom">
-    <img src="/static/web-photo/lamborginy_ph_cut" alt="Car Image" class="car-image">
-    <div>
-        <h1 class="first">
-            Добро пожаловать в <strong>PLATINUM</strong> — лидера в сфере подбора и продажи автомобилей премиум-класса.
-            Мы предлагаем не просто машины — мы дарим стиль жизни.
-        </h1>
-    </div>
-</section>
-
-<!-- О компании -->
-<section class="container-company scroll-animate animate-from-bottom">
-    <h2 class="mb-4 text-center">О компании</h2>
-    <p>
-        <strong>PLATINUM</strong> — это больше, чем автосалон. Мы создаём уникальный клиентский опыт с 2002 года, специализируясь на продаже автомобилей премиум-класса. 
-        Наши клиенты ценят нас за персональный подход, прозрачность сделок и надёжное сопровождение на всех этапах покупки.
-    </p>
-    <p>
-        Мы работаем по всей России, а также напрямую сотрудничаем с авторитетными поставщиками из Европы, Японии и США. 
-        Наша миссия — сделать покупку автомобиля мечты максимально комфортной, безопасной и выгодной для вас.
-    </p>
-    <p>
-        Независимо от того, ищете ли вы эксклюзивную новинку или надёжный автомобиль с пробегом, команда PLATINUM поможет воплотить ваши желания в реальность.
-    </p>
-</section>
-
-<h1 class="feedback-plus scroll-animate animate-from-bottom">Почему выбирают нас</h1>
-<div class="card-container">
-    <span class="card  animate-from-left" >
-        <div class="card-header" style="border-radius: 0 0 12px 12px;"><h1>Надежность</h1></div>
-        <div class="card-body">
-            <i class="bi bi-shield-lock enlarged-icon golden-icon"></i>
-            <h2>100% юридическая чистота</h2>
-            <p>Мы проверяем историю каждого авто. Спокойствие — гарантировано.</p>
-        </div>
-    </span>
-
-    <span class="card scroll-animate animate-from-bottom" >
-        <div class="card-header" style="border-radius: 0 0 12px 12px;"><h1>Экспертиза</h1></div>
-        <div class="card-body">
-            <i class="bi bi-person-check enlarged-icon golden-icon"></i>
-            <h2>10+ лет в индустрии</h2>
-            <p>Сотрудники — признанные эксперты в подборе премиум-авто.</p>
-        </div>
-    </span>
-
-    <span class="card scroll-animate animate-from-right" >
-        <div class="card-header" style="border-radius: 0 0 12px 12px;"><h1>Подход</h1></div>
-        <div class="card-body">
-            <i class="bi bi-star enlarged-icon golden-icon"></i>
-            <h2>Каждый клиент — VIP</h2>
-            <p>Мы учитываем ваши цели, стиль и даже цвет настроения.</p>
-        </div>
-    </span>
-</div>
-
-<section class="client-quiz scroll-animate animate-from-bottom">
-    <h2>Какой автомобиль подходит вам?</h2>
-    <div class="quiz-options">
-        <div class="quiz-card scroll-animate animate-from-left">
-            <h3>Бизнесмен</h3>
-            <p>Mercedes, BMW, Lexus — стиль и статус без компромиссов.</p>
-        </div>
-        <div class="quiz-card scroll-animate animate-from-bottom">
-            <h3>Семейный</h3>
-            <p>Вместительные, безопасные и надёжные — от Audi до Volvo.</p>
-        </div>
-        <div class="quiz-card scroll-animate animate-from-right">
-            <h3>Гонщик</h3>
-            <p>Porsche, M-серия, AMG — скорость, рев мотора и драйв.</p>
-        </div>
-    </div>
-</section>
-
-<div class="info-card-container">
-    <div class="info-card left scroll-animate animate-from-left">
-        <div class="card-content">
-            <div class="info-card-tab">
-                <span>Команда</span>
-            </div>
-            <div class="text-content">
-                <h2>Наша команда</h2>
-                <p>В нашей компании работают настоящие профессионалы:</p>
-                <ul>
-                    <li><strong>Иван Алексеев</strong> — эксперт по подбору авто</li>
-                    <li><strong>Елена Морозова</strong> — юрист</li>
-                    <li><strong>Михаил Литвин</strong> — технический консультант</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="info-card right scroll-animate animate-from-right">
-        <div class="card-content">
-            <div class="info-card-tab">
-                <span>Партнеры</span>
-            </div>
-            <div class="text-content">
-                <h2>Наши партнеры</h2>
-                <ul>
-                    <li><strong>AutoGroup</strong> — крупнейший автодилер в регионе</li>
-                    <li><strong>TechCorp</strong> — лидер в области автомобильных технологий</li>
-                    <li><strong>ServicePro</strong> — наши надежные поставщики запчастей</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="info-card center scroll-animate animate-from-bottom">
-        <div class="card-content">
-            <div class="info-card-tab">
-                <span>Услуги</span>
-            </div>
-            <div class="text-content">
-                <h2>Наши услуги</h2>
-                <ul>
-                    <li><strong>Консультации</strong> — помощь в подборе и покупке автомобилей</li>
-                    <li><strong>Оценка</strong> — оценка технического состояния автомобилей</li>
-                    <li><strong>Техническое обслуживание</strong> — сервисное обслуживание автомобилей</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<section class="comparison-section scroll-animate animate-from-bottom">
-    <h2>Почему выбирают нас?</h2>
-    <table>
-        <tr>
-            <th></th>
-            <th>PLATINUM</th>
-            <th>Другие</th>
-        </tr>
-        <tr>
-            <td>Индивидуальный подход</td>
-            <td>✔</td>
-            <td>✖</td>
-        </tr>
-        <tr>
-            <td>Настоящая премиальность</td>
-            <td>✔</td>
-            <td>✔</td>
-        </tr>
-        <tr>
-            <td>Подбор без навязывания</td>
-            <td>✔</td>
-            <td>✖</td>
-        </tr>
-        <tr>
-            <td>Эстетика</td>
-            <td>✔</td>
-            <td>✔</td>
-        </tr>
-    </table>
-</section>
-
-<section class="dream-car-section scroll-animate animate-from-bottom">
-    <h2>Выберите автомобиль мечты</h2>
-    <div class="dream-car-options">
-        <a href="/" class="dream-car-option scroll-animate animate-from-left">
-            <img src="/static/web-photo/s-class.jpg" alt="Mercedes S-Class">
-            <span>Mercedes S-Class</span>
-        </a>
-        <a href="/" class="dream-car-option scroll-animate animate-from-bottom">
-            <img src="/static/web-photo/bmv-m8.jpg" alt="BMW M8">
-            <span>BMW M8</span>
-        </a>
-        <a href="/" class="dream-car-option scroll-animate animate-from-right">
-            <img src="/static/web-photo/porche-911.jpg" alt="Porsche 911">
-            <span>Porsche 911</span>
-        </a>
-    </div>
-</section>
-
-<section class="modern-quote scroll-animate animate-from-bottom">
-    <p class="quote-text">Настоящая роскошь — это не цена. Это выбор.</p>
-    <p class="quote-author">— PLATINUM</p>
-</section>
-
-<!-- Блок "Остались вопросы?" -->
-<section class="contact-questions scroll-animate animate-from-bottom">
-    <div class="questions-container">
-        <h2>Остались вопросы?</h2>
-        <p class="questions-subtitle">Оставьте номер телефона, и наш специалист свяжется с вами в течение 15 минут</p>
-        
-        <form class="phone-form">
-            <div class="input-group">
-                <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required>
-                <button type="submit" class="gold-button">
-                    <i class="bi bi-telephone"></i> Перезвоните мне
-                </button>
-            </div>
-            <div class="privacy-notice">
-                <input type="checkbox" id="agree" required checked>
-                <label for="agree">Я согласен на обработку персональных данных</label>
-            </div>
-        </form>
-        
-        <div class="alternative-contact">
-            <p>Или свяжитесь с нами другим удобным способом:</p>
-            <div class="contact-icons">
-                <a href="#" class="contact-icon"><i class="bi bi-whatsapp"></i></a>
-                <a href="#" class="contact-icon"><i class="bi bi-telegram"></i></a>
-                <a href="#" class="contact-icon"><i class="bi bi-envelope"></i></a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<h1 class="feedback show">Отзывы</h1>
-<div class="reviews-wrapper">
-    <div class="review-card">
-        <h4>Андрей К.</h4>
-        <p>Отличная компания! Привезли BMW X6 из Германии. Всё прозрачно и быстро. Рекомендую!</p>
-        <div class="stars">★★★★</div>
-    </div>
-    <div class="review-card">
-        <h4>Мария Л.</h4>
-        <p>Купила Audi A5. Очень довольна! Команда работает на совесть.</p>
-        <div class="stars">★★★★★</div>
-    </div>
-    <div class="review-card">
-        <h4>Олег С.</h4>
-        <p>Профессионалы. Помогли с подбором Porsche Cayenne, всё чётко.</p>
-        <div class="stars">★★★★★</div>
-    </div>
-    <div class="review-card">
-        <h4>Анна М.</h4>
-        <p>Сервис на высоте. Спасибо за Lexus RX!</p>
-        <div class="stars">★★★★★</div>
-    </div>
-    <div class="review-card">
-        <h4>Игорь Т.</h4>
-        <p>Очень понравился подход. Машина в идеале. Все документы подготовили быстро.</p>
-        <div class="stars">★★★★★</div>
-    </div>
-</div>
-
-<h2 class="feedback-form-title">Оставить отзыв</h2>
-<form class="feedback-form">
-    <input type="text" name="name" placeholder="Ваше имя" required>
-    <textarea name="review" placeholder="Ваш отзыв" rows="4" required></textarea>
-    <label for="rating">Рейтинг:</label>
-    <select name="rating" required>
-        <option value="5">5 — Отлично</option>
-        <option value="4">4 — Хорошо</option>
-        <option value="3">3 — Удовлетворительно</option>
-        <option value="2">2 — Плохо</option>
-        <option value="1">1 — Ужасно</option>
-    </select>
-    <button type="submit">Отправить</button>
-</form>
+    </script>
+</body>
+</html>
 {% endblock %}
