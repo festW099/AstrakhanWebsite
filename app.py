@@ -67,7 +67,6 @@ def init_db():
 init_db()
 
 def init_order_db():
-    """Инициализирует базу данных заказов, создавая необходимые таблицы"""
     orders_db_path = os.path.join('Base', 'orders.db')
     os.makedirs('Base', exist_ok=True)
     
@@ -193,14 +192,27 @@ def admin_comments():
     conn.close()
     return render_template('admin_comments.html', reviews=reviews)
 
-@app.route('/admin/')
-def admin_comments():
+@app.route('/admin/contact')
+def contact():
     conn = sqlite3.connect('Base/database.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT name, comment, rating FROM reviews")
-    reviews = cursor.fetchall()
+    cursor.execute("SELECT id, phone, status, created_at FROM contacts ORDER BY created_at DESC")
+    contacts = cursor.fetchall()
     conn.close()
-    return render_template('admin_comments.html', reviews=reviews)
+    return render_template('admin_contact.html', contacts=contacts)
+
+@app.route('/update_contact_status', methods=['POST'])
+def update_contact_status():
+    contact_id = request.form.get('contact_id')
+    new_status = request.form.get('new_status')
+    
+    conn = sqlite3.connect('Base/database.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE contacts SET status = ? WHERE id = ?", (new_status, contact_id))
+    conn.commit()
+    conn.close()
+    
+    return redirect('/admin/contact')
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():

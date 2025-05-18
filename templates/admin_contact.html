@@ -1,0 +1,78 @@
+{% extends "admin_pattern.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-dark mb-4">Заявки на обратный звонок</h2>
+    
+    <div class="row">
+        {% for contact in contacts %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-dark shadow-sm">
+                <div class="card-body bg-light">
+                    <h5 class="card-title text-dark">Заявка #{{ contact[0] }}</h5>
+                    <hr class="border-dark">
+                    <div class="card-text text-dark mb-3">
+                        <p><strong>Телефон:</strong> {{ contact[1] }}</p>
+                        <p>
+                            <strong>Статус:</strong> 
+                            <span class="badge rounded-pill bg-dark text-white">
+                                {% if contact[2] == 'new' %}Новый
+                                {% elif contact[2] == 'contacted' %}В работе
+                                {% elif contact[2] == 'completed' %}Завершен
+                                {% elif contact[2] == 'rejected' %}Отклонен
+                                {% endif %}
+                            </span>
+                        </p>
+                        <p><strong>Дата:</strong> {{ contact[3] }}</p>
+                    </div>
+                    
+                    <form method="POST" action="/update_contact_status" class="d-flex flex-column gap-2">
+                        <input type="hidden" name="contact_id" value="{{ contact[0] }}">
+                        
+                        <button type="submit" name="new_status" value="new" 
+                                class="btn {% if contact[2] == 'new' %}btn-dark{% else %}btn-outline-dark{% endif %} border-dark rounded text-start">
+                            Новый
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="contacted" 
+                                class="btn {% if contact[2] == 'contacted' %}btn-dark{% else %}btn-outline-dark{% endif %} border-dark rounded text-start">
+                            В работе
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="completed" 
+                                class="btn {% if contact[2] == 'completed' %}btn-dark{% else %}btn-outline-dark{% endif %} border-dark rounded text-start">
+                            Завершен
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+        border-radius: 8px;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-outline-dark:hover {
+        background-color: #212529;
+        color: white;
+    }
+    .badge {
+        font-weight: 500;
+        padding: 5px 10px;
+        background-color: #212529 !important;
+    }
+    .btn {
+        margin-top: 5px;
+        padding: 8px 12px;
+        transition: all 0.2s;
+    }
+</style>
+{% endblock %}
