@@ -1,14 +1,14 @@
 {% extends "pattern.html" %}
 
 {% block content %}
-<br> <br> <br>
+<br> <br> <br> <br> <br> <br>
 <div class="catalog-container">
     <div class="filter-section">
-        <h2>Фильтры</h2>
+        <h2>ФИЛЬТРЫ</h2>
         <form action="" method="GET">
             <div class="filter-group">
                 <label for="make">Марка:</label>
-                <select id="make" name="make">
+                <select id="make" name="make" class="custom-select">
                     <option value="">Выберите марку</option>
                     {% for make in makes %}
                         <option value="{{ make }}" {% if request.args.get('make') == make %}selected{% endif %}>{{ make }}</option>
@@ -18,7 +18,7 @@
 
             <div class="filter-group">
                 <label for="model">Модель:</label>
-                <select id="model" name="model">
+                <select id="model" name="model" class="custom-select">
                     <option value="">Выберите модель</option>
                     {% for model in models %}
                         <option value="{{ model }}" {% if request.args.get('model') == model %}selected{% endif %}>{{ model }}</option>
@@ -27,18 +27,20 @@
             </div>
 
             <div class="filter-group">
-                <label>Цена:</label>
-                <input type="range" name="price_min" min="0" max="{{ max_price }}" value="{{ request.args.get('price_min', 0) }}" oninput="priceMinOutput.value = this.value">
-                <input type="range" name="price_max" min="0" max="{{ max_price }}" value="{{ request.args.get('price_max', max_price) }}" oninput="priceMaxOutput.value = this.value">
-                <div style="display: flex; justify-content: space-between;">
-                    <output id="priceMinOutput">{{ request.args.get('price_min', 0) }}</output> ₽
-                    <output id="priceMaxOutput">{{ request.args.get('price_max', max_price) }}</output> ₽
+                <label>Цена (₽):</label>
+                <div class="price-range">
+                    <input type="range" name="price_min" min="0" max="{{ max_price }}" value="{{ request.args.get('price_min', 0) }}" oninput="priceMinOutput.value = this.value">
+                    <input type="range" name="price_max" min="0" max="{{ max_price }}" value="{{ request.args.get('price_max', max_price) }}" oninput="priceMaxOutput.value = this.value">
+                    <div class="price-output">
+                        <output id="priceMinOutput">{{ request.args.get('price_min', 0) }}</output> - 
+                        <output id="priceMaxOutput">{{ request.args.get('price_max', max_price) }}</output>
+                    </div>
                 </div>
             </div>
 
             <div class="filter-group">
                 <label for="color">Цвет:</label>
-                <select id="color" name="color">
+                <select id="color" name="color" class="custom-select">
                     <option value="">Выберите цвет</option>
                     {% for color in colors %}
                         <option value="{{ color }}" {% if request.args.get('color') == color %}selected{% endif %}>{{ color }}</option>
@@ -48,7 +50,7 @@
 
             <div class="filter-group">
                 <label for="used">Состояние:</label>
-                <select id="used" name="used">
+                <select id="used" name="used" class="custom-select">
                     <option value="">Все</option>
                     <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанный</option>
                     <option value="0" {% if request.args.get('used') == '0' %}selected{% endif %}>Новый</option>
@@ -57,7 +59,7 @@
 
             <div class="filter-group">
                 <label for="drive_type">Тип привода:</label>
-                <select id="drive_type" name="drive_type">
+                <select id="drive_type" name="drive_type" class="custom-select">
                     <option value="">Выберите тип привода</option>
                     <option value="Полный" {% if request.args.get('drive_type') == 'Полный' %}selected{% endif %}>Полный</option>
                     <option value="Задний" {% if request.args.get('drive_type') == 'Задний' %}selected{% endif %}>Задний</option>
@@ -66,29 +68,31 @@
             </div>
 
             <div class="filter-buttons">
-                <button type="submit">Применить фильтры</button>
-            </div>
-            <div class="filter-buttons">
-                <a href="{{ url_for('catalog') }}" class="reset-button">Сбросить фильтры</a>
+                <button type="submit" class="apply-btn">ПРИМЕНИТЬ</button>
+                <a href="{{ url_for('catalog') }}" class="reset-btn">СБРОСИТЬ</a>
             </div>
         </form>
     </div>
 
     <div class="catalog-results">
-        <h2>Каталог машин</h2>
+        <h2>КАТАЛОГ АВТОМОБИЛЕЙ</h2>
         <div class="car-cards">
             {% for car in cars %}
                 <div class="car-card">
-                    <img src="/static/photo/{{ car.photo }}" alt="Фото {{ car.make }} {{ car.model }}" />
+                    <div class="car-image">
+                        <img src="/static/photo/{{ car.photo }}" alt="{{ car.make }} {{ car.model }}" />
+                    </div>
                     <div class="car-details">
                         <h3>{{ car.make }} {{ car.model }}</h3>
-                        <p>Поколение: {{ car.generation }}</p>
-                        <p>Цена: {{ car.price }} ₽</p>
-                        <p>Цвет: {{ car.color }}</p>
-                        <p>Состояние: {% if car.used %}Подержанный{% else %}Новый{% endif %}</p>
-                        <p>Тип привода: {{ car.drive_type }}</p>
+                        <div class="car-specs">
+                            <p><strong>Поколение:</strong> {{ car.generation }}</p>
+                            <p><strong>Цена:</strong> {{ "{:,.0f}".format(car.price).replace(",", " ") }} ₽</p>
+                            <p><strong>Цвет:</strong> {{ car.color }}</p>
+                            <p><strong>Состояние:</strong> {% if car.used %}Подержанный{% else %}Новый{% endif %}</p>
+                            <p><strong>Привод:</strong> {{ car.drive_type }}</p>
+                        </div>
                         <form action="{{ url_for('add_to_basket', car_id=car.id) }}" method="post">
-                            <button type="submit" class="add-to-basket-btn">Добавить в корзину</button>
+                            <button type="submit" class="add-to-basket-btn">ДОБАВИТЬ В КОРЗИНУ</button>
                         </form>                        
                     </div>
                 </div>
@@ -97,4 +101,255 @@
     </div>
 </div>
 
+<style>
+    :root {
+        --black: #1a1a1a;
+        --white: #ffffff;
+        --gray: #f5f5f5;
+        --dark-gray: #e0e0e0;
+        --text-gray: #666666;
+    }
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        color: var(--black);
+        background-color: var(--white);
+        line-height: 1.6;
+    }
+
+    .catalog-container {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .filter-section {
+        width: 280px;
+        padding: 20px;
+        background-color: var(--white);
+        border: 1px solid var(--dark-gray);
+        border-radius: 8px;
+        margin-right: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .filter-section h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--black);
+    }
+
+    .filter-group {
+        margin-bottom: 20px;
+    }
+
+    .filter-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--black);
+    }
+
+    .custom-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--dark-gray);
+        border-radius: 6px;
+        background-color: var(--white);
+        font-size: 14px;
+        color: var(--black);
+        appearance: none;
+        transition: all 0.3s;
+    }
+
+    .custom-select:focus {
+        outline: none;
+        border-color: var(--black);
+        box-shadow: 0 0 0 1px var(--black);
+    }
+
+    .price-range {
+        margin-top: 10px;
+    }
+
+    .price-range input[type="range"] {
+        width: 100%;
+        margin: 5px 0;
+        -webkit-appearance: none;
+        height: 2px;
+        background: var(--dark-gray);
+    }
+
+    .price-range input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--black);
+        cursor: pointer;
+    }
+
+    .price-output {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: var(--text-gray);
+        margin-top: 5px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .apply-btn, .reset-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .apply-btn {
+        background-color: var(--black);
+        color: var(--white);
+    }
+
+    .apply-btn:hover {
+        background-color: #333;
+    }
+
+    .reset-btn {
+        background-color: var(--white);
+        color: var(--black);
+        border: 1px solid var(--dark-gray);
+        text-align: center;
+        line-height: 1.5;
+        text-decoration: none;
+    }
+
+    .reset-btn:hover {
+        background-color: var(--gray);
+    }
+
+    .catalog-results {
+        flex: 1;
+    }
+
+    .catalog-results h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--black);
+    }
+
+    .car-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .car-card {
+        background-color: var(--white);
+        border: 1px solid var(--dark-gray);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .car-image {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .car-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .car-card:hover .car-image img {
+        transform: scale(1.05);
+    }
+
+    .car-details {
+        padding: 20px;
+    }
+
+    .car-details h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--black);
+    }
+
+    .car-specs {
+        margin-bottom: 15px;
+    }
+
+    .car-specs p {
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: var(--text-gray);
+    }
+
+    .car-specs strong {
+        font-weight: 500;
+        color: var(--black);
+    }
+
+    .add-to-basket-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--black);
+        color: var(--white);
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .add-to-basket-btn:hover {
+        background-color: #333;
+    }
+
+    @media (max-width: 768px) {
+        .catalog-container {
+            flex-direction: column;
+        }
+
+        .filter-section {
+            width: 100%;
+            margin-right: 0;
+            margin-bottom: 20px;
+        }
+
+        .car-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
