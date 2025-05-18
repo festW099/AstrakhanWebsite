@@ -11,6 +11,7 @@ def init_db():
     conn = sqlite3.connect(os.path.join('Base', 'database.db'))
     cursor = conn.cursor()
     
+    # Таблица автомобилей
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS cars (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,6 +35,28 @@ def init_db():
             trunk_volume REAL,
             safety_rating REAL,
             model_3d TEXT
+        )
+    ''')
+    
+    # Таблица отзывов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            comment TEXT NOT NULL,
+            rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+            status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Таблица контактов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contacts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            phone TEXT NOT NULL,
+            status TEXT DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'completed', 'rejected')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     
@@ -310,14 +333,45 @@ def catalog():
                          drive_type=drive_type,
                          max_price=max_price)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/submit_review', methods=['POST'])
+def submit_review():
+    name = request.form.get('name')
+    review = request.form.get('review')
+    rating = request.form.get('rating')
+    
+    conn = sqlite3.connect(os.path.join('Base', 'database.db'))
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO reviews (name, comment, rating)
+        VALUES (?, ?, ?)
+    ''', (name, review, rating))
+    conn.commit()
+    conn.close()
+    
+    return redirect(url_for('about'))  # или другую страницу с сообщением об успехе
+
+@app.route('/submit_contact', methods=['POST'])
+def submit_contact():
+    phone = request.form.get('phone')
+    
+    conn = sqlite3.connect(os.path.join('Base', 'database.db'))
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO contacts (phone)
+        VALUES (?)
+    ''', (phone,))
+    conn.commit()
+    conn.close()
+    
+    return redirect(url_for('about'))  # или другую страницу с сообщением об успехе
 
 @app.route('/')
 def catalog_1():
     return redirect(url_for('catalog'))
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
 
 @app.route('/login_user')
 def login_user():

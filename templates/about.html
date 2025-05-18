@@ -732,7 +732,7 @@
             <h2>Остались вопросы?</h2>
             <p class="questions-subtitle">Оставьте номер телефона, и наш специалист свяжется с вами в течение 15 минут</p>
             
-            <form class="phone-form">
+            <form class="phone-form" action="/submit_contact" method="POST">
                 <div class="input-group">
                     <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required>
                     <button type="submit" class="gold-button">
@@ -786,7 +786,7 @@
     </div>
 
     <h2 class="feedback-form-title scroll-animate animate-from-bottom">Оставить отзыв</h2>
-    <form class="feedback-form scroll-animate animate-from-bottom">
+    <form class="feedback-form scroll-animate animate-from-bottom" action="/submit_review" method="POST">
         <input type="text" name="name" placeholder="Ваше имя" required>
         <textarea name="review" placeholder="Ваш отзыв" rows="4" required></textarea>
         <label for="rating">Рейтинг:</label>
