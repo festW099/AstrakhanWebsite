@@ -44,7 +44,6 @@ init_db()
 
 @app.route('/catalog/<int:car_id>')
 def car_details(car_id):
-    print(car_id)
     conn = sqlite3.connect(os.path.join('Base', 'database.db'))
     cursor = conn.cursor()
     

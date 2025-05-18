@@ -1,38 +1,158 @@
 {% extends "pattern.html" %}
 {% block content %}
-<br> <br> <br> <br> <br>
-<div class="pay">
-    <div class="checkout-container">
-        <ul>
-            {% for item in basket_items %}
-                <li>
-                    <span>{{ item['name'] }} x{{ item['quantity'] }}</span>
-                    <span>{{ item['total'] }} ₽</span>
-                </li>
-            {% endfor %}
-        </ul>
-        <p>Итого: {{ total_price }} ₽</p>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+rel="stylesheet"> 
+<style> 
+.payment-card { 
+    max-width: 600px; 
+    margin: auto; 
+    margin-top: 5vh; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    transform: translateY(-30px); 
+    opacity: 0; 
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out; 
+}
 
-        <h2>Оплата</h2>
-        <form method="post">
-            <label>Номер телефона:
-                <input type="text" name="phone_number" placeholder="+7 (XXX) XXX-XX-XX" required>
-            </label>
+.payment-card.show {
+    transform: translateY(0);
+    opacity: 1;
+}
 
-            <label>Номер карты:
-                <input type="text" name="card_number" placeholder="0000 0000 0000 0000" required>
-            </label>
+.card-header {
+    background: #1a1a1a;
+    color: white;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 1.5rem;
+}
 
-            <label>CVV:
-                <input type="text" name="cvv" placeholder="000" required>
-            </label>
+.card-header h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 500;
+}
 
-            <label>Срок действия:
-                <input type="text" name="expiry" placeholder="00/00" required>
-            </label>
+.basket-items {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
 
-            <button type="submit">Оплатить</button>
-        </form>
+.basket-items li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+.total-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1.5rem 0;
+    text-align: right;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 12px 15px;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.form-control:focus {
+    border-color: #1a1a1a;
+    box-shadow: none;
+}
+
+.btn-pay {
+    background: #1a1a1a;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    border: none;
+}
+
+.btn-pay:hover {
+    background: #000000;
+    color: white;
+    transform: translateY(-1px);
+}
+
+</style>
+<br><br><br><br>
+<div class="container"> 
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card payment-card shadow-lg" id="paymentCard"> 
+                <div class="card-header text-center"> 
+                    <h2>Оплата заказа</h2> 
+                </div> <div class="card-body p-4"> 
+                    <ul class="basket-items"> {% for item in basket_items %} 
+                        <li> 
+                            <span>{{ item['name'] }} ×{{ item['quantity'] }}</span> 
+                            <span>{{ item['total'] }} ₽</span> </li> {% endfor %} 
+                        </ul> 
+                        <p class="total-price">Итого: {{ total_price }} ₽</p>
+
+                <form method="post">
+                    <div class="form-group">
+                        <label>Номер телефона</label>
+                        <input type="text" class="form-control" name="phone_number" 
+                               placeholder="+7 (999) 999-99-99" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Номер карты</label>
+                        <input type="text" class="form-control" name="card_number" 
+                               placeholder="4242 4242 4242 4242" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Срок действия</label>
+                                <input type="text" class="form-control" name="expiry" 
+                                       placeholder="MM/YY" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" class="form-control" name="cvv" 
+                                       placeholder="123" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-pay mt-4">
+                        Подтвердить оплату
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
+</div>
+<script> 
+document.addEventListener("DOMContentLoaded", function() 
+{ 
+    setTimeout(function() 
+    { 
+        document.getElementById('paymentCard').classList.add('show'); 
+        },
+    100); 
+}); 
+</script>
+
 {% endblock %}
