@@ -1,0 +1,114 @@
+{% extends "admin_pattern.html" %}
+
+{% block content %}
+<style>
+    .reviews-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: 5% auto;
+        padding: 0 20px;
+    }
+    .review-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #e0e0e0;
+        height: 200px; /* Фиксированная высота */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+    }
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+    .review-card h4 {
+        margin: 0 0 15px 0;
+        color: #222;
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+    .review-card p {
+        color: #444;
+        line-height: 1.5;
+        margin: 0 0 15px 0;
+        font-size: 0.95em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Ограничение текста до 3 строк */
+        -webkit-box-orient: vertical;
+    }
+    .stars {
+        color: #333;
+        font-size: 1.3em;
+        letter-spacing: 2px;
+        margin-top: auto; /* Прижимаем к низу карточки */
+    }
+    .stars .filled {
+        color: #000;
+    }
+    .scroll-animate {
+        opacity: 0;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .animate-from-bottom {
+        transform: translateY(30px);
+    }
+
+    @media (max-width: 768px) {
+        .reviews-container {
+            grid-template-columns: 1fr;
+            margin: 10% auto;
+        }
+    }
+</style>
+<div class="reviews-container">
+    {% for review in reviews %}
+    <div class="review-card scroll-animate animate-from-bottom">
+        <div>
+            <h4>{{ review[0] }}</h4>
+            <p>{{ review[1] }}</p>
+        </div>
+        <div class="stars">
+            {% for i in range(5) %}
+                {% if i < review[2] %}
+                    <span class="filled">★</span>
+                {% else %}
+                    <span>☆</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateElements = document.querySelectorAll('.scroll-animate');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+    });
+</script>
+
+{% endblock %}

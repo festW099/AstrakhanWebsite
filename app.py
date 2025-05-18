@@ -66,6 +66,142 @@ def init_db():
 
 init_db()
 
+def init_order_db():
+    """Инициализирует базу данных заказов, создавая необходимые таблицы"""
+    orders_db_path = os.path.join('Base', 'orders.db')
+    os.makedirs('Base', exist_ok=True)
+    
+    conn = sqlite3.connect(orders_db_path)
+    cursor = conn.cursor()
+    
+    # Создаём таблицы для заказов
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS orders (
+        order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        phone_number TEXT,
+        card_number TEXT,
+        total_price REAL
+    )
+    ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS order_items (
+        item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_id INTEGER,
+        car_id INTEGER,
+        quantity INTEGER,
+        price REAL,
+        FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
+@app.route('/pay', methods=['GET', 'POST'])
+def pay():
+    basket_items = []
+    total_price = 0
+
+    if 'basket' in session and session['basket']:
+        conn = sqlite3.connect(os.path.join('Base', 'database.db'))
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        basket_counter = Counter(session['basket'])
+        unique_ids = list(basket_counter.keys())
+
+        placeholders = ','.join('?' for _ in unique_ids)
+        cursor.execute(f'SELECT * FROM cars WHERE id IN ({placeholders})', unique_ids)
+        cars = cursor.fetchall()
+        conn.close()
+
+        for car in cars:
+            car = dict(car)
+            car_id = car['id']
+            quantity = basket_counter[car_id]
+            car['quantity'] = quantity
+            car['total'] = car['price'] * quantity
+            basket_items.append(car)
+
+        total_price = sum(item['total'] for item in basket_items)
+
+    if request.method == 'POST':
+        card_number = request.form.get('card_number')
+        cvv = request.form.get('cvv')
+        expiry = request.form.get('expiry')
+        phone_number = request.form.get('phone_number')
+
+        # Инициализация базы данных заказов
+        init_order_db()
+        
+        conn = sqlite3.connect(os.path.join('Base', 'orders.db'))
+        cursor = conn.cursor()
+        
+        if (card_number == '0000000000000000' or card_number == '0000 0000 0000') and cvv == '000' and (expiry == '0000' or expiry == '00 00' or expiry == '00/00'):
+            # Сохраняем основной заказ
+            cursor.execute('''
+            INSERT INTO orders (phone_number, card_number, total_price)
+            VALUES (?, ?, ?)
+            ''', (phone_number, card_number, total_price))
+            
+            order_id = cursor.lastrowid
+            
+            # Сохраняем товары заказа
+            for item in basket_items:
+                cursor.execute('''
+                INSERT INTO order_items (order_id, car_id, quantity, price)
+                VALUES (?, ?, ?, ?)
+                ''', (order_id, item['id'], item['quantity'], item['price']))
+            
+            conn.commit()
+            conn.close()
+            
+            session.pop('basket', None)
+            return "Тестовый платёж прошёл успешно! Спасибо за заказ."
+        else:
+            # Сохраняем основной заказ
+            cursor.execute('''
+            INSERT INTO orders (phone_number, card_number, total_price)
+            VALUES (?, ?, ?)
+            ''', (phone_number, card_number, total_price))
+            
+            order_id = cursor.lastrowid
+            
+            # Сохраняем товары заказа
+            for item in basket_items:
+                cursor.execute('''
+                INSERT INTO order_items (order_id, car_id, quantity, price)
+                VALUES (?, ?, ?, ?)
+                ''', (order_id, item['id'], item['quantity'], item['price']))
+            
+            conn.commit()
+            conn.close()
+            
+            session.pop('basket', None)
+            return "платёж прошёл успешно! Спасибо за заказ."
+
+    return render_template('pay.html', basket_items=basket_items, total_price=total_price)
+
+@app.route('/admin/comments')
+def admin_comments():
+    conn = sqlite3.connect('Base/database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, comment, rating FROM reviews")
+    reviews = cursor.fetchall()
+    conn.close()
+    return render_template('admin_comments.html', reviews=reviews)
+
+@app.route('/admin/')
+def admin_comments():
+    conn = sqlite3.connect('Base/database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, comment, rating FROM reviews")
+    reviews = cursor.fetchall()
+    conn.close()
+    return render_template('admin_comments.html', reviews=reviews)
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
@@ -480,7 +616,6 @@ def remove_from_basket(car_id):
 
     return redirect(url_for('basket'))
 
-
 @app.route('/basket', methods=['GET', 'POST'])
 def basket():
     basket_items = []
@@ -518,116 +653,6 @@ def basket():
 
 
     return render_template('basket.html', basket_items=basket_items, total_price=total_price)
-
-@app.route('/pay', methods=['GET', 'POST'])
-def pay():
-    basket_items = []
-    total_price = 0
-
-    if 'basket' in session and session['basket']:
-        conn = sqlite3.connect(os.path.join('Base', 'database.db'))
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-
-        basket_counter = Counter(session['basket'])
-        unique_ids = list(basket_counter.keys())
-
-        placeholders = ','.join('?' for _ in unique_ids)
-        cursor.execute(f'SELECT * FROM cars WHERE id IN ({placeholders})', unique_ids)
-        cars = cursor.fetchall()
-        conn.close()
-
-        for car in cars:
-            car = dict(car)
-            car_id = car['id']
-            quantity = basket_counter[car_id]
-            car['quantity'] = quantity
-            car['total'] = car['price'] * quantity
-            basket_items.append(car)
-
-        total_price = sum(item['total'] for item in basket_items)
-
-    if request.method == 'POST':
-        card_number = request.form.get('card_number')
-        cvv = request.form.get('cvv')
-        expiry = request.form.get('expiry')
-        phone_number = request.form.get('phone_number')
-
-        # Создаём базу данных заказов если её нет
-        orders_db_path = os.path.join('Base', 'orders.db')
-        os.makedirs('Base', exist_ok=True)
-        
-        conn = sqlite3.connect(orders_db_path)
-        cursor = conn.cursor()
-        
-        # Создаём таблицы для заказов
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS orders (
-            order_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            phone_number TEXT,
-            card_number TEXT,
-            total_price REAL
-        )
-        ''')
-        
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS order_items (
-            item_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_id INTEGER,
-            car_id INTEGER,
-            quantity INTEGER,
-            price REAL,
-            FOREIGN KEY (order_id) REFERENCES orders(order_id)
-        )
-        ''')
-        
-        if (card_number == '0000000000000000' or card_number == '0000 0000 0000') and cvv == '000' and (expiry == '0000' or expiry == '00 00' or expiry == '00/00'):
-            # Сохраняем основной заказ
-            cursor.execute('''
-            INSERT INTO orders (phone_number, card_number, total_price)
-            VALUES (?, ?, ?)
-            ''', (phone_number, card_number, total_price))
-            
-            order_id = cursor.lastrowid
-            
-            # Сохраняем товары заказа
-            for item in basket_items:
-                cursor.execute('''
-                INSERT INTO order_items (order_id, car_id, quantity, price)
-                VALUES (?, ?, ?, ?)
-                ''', (order_id, item['id'], item['quantity'], item['price']))
-            
-            conn.commit()
-            conn.close()
-            
-            session.pop('basket', None)
-            return "Тестовый платёж прошёл успешно! Спасибо за заказ."
-        else:
-            # Сохраняем основной заказ
-            cursor.execute('''
-            INSERT INTO orders (phone_number, card_number, total_price)
-            VALUES (?, ?, ?)
-            ''', (phone_number, card_number, total_price))
-            
-            order_id = cursor.lastrowid
-            
-            # Сохраняем товары заказа
-            for item in basket_items:
-                cursor.execute('''
-                INSERT INTO order_items (order_id, car_id, quantity, price)
-                VALUES (?, ?, ?, ?)
-                ''', (order_id, item['id'], item['quantity'], item['price']))
-            
-            conn.commit()
-            conn.close()
-            
-            session.pop('basket', None)
-            return "платёж прошёл успешно! Спасибо за заказ."
-
-    return render_template('pay.html', basket_items=basket_items, total_price=total_price)
-
-
 
 if __name__ == '__main__':
     init_db()
