@@ -1,40 +1,287 @@
 {% extends "pattern.html" %}
 {% block content %}
-<br><br><br> <br><br>
-<h2 class="basket-title">Корзина</h2>
+<style>
+    body {
+        background-color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        color: #000000;
+    }
+    
+    .basket-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .basket-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2.5rem;
+        color: #000000;
+        font-weight: 700;
+        position: relative;
+    }
+    
+    .basket-title:after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 3px;
+        background: #000000;
+        margin: 15px auto 0;
+    }
+    
+    .basket-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .basket-item {
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+        display: flex;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .basket-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    }
+    
+    .car-image-container {
+        width: 320px;
+        position: relative;
+        flex-shrink: 0;
+        background: #f5f5f5;
+    }
+    
+    .car-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    
+    .car-details {
+        padding: 1.8rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .car-make-model {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 0.8rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .car-price {
+        font-size: 1.3rem;
+        color: #000000;
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+    }
+    
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.2rem;
+    }
+    
+    .quantity-label {
+        margin-right: 1rem;
+        font-weight: 500;
+        color: #555555;
+    }
+    
+    .quantity-value {
+        font-weight: 600;
+    }
+    
+    .item-total {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: auto;
+        padding-top: 1.2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        font-size: 0.9rem;
+    }
+    
+    .btn-remove-one {
+        background-color: #f0f0f0;
+        color: #000000;
+        border: 1px solid #d0d0d0;
+    }
+    
+    .btn-remove-one:hover {
+        background-color: #e0e0e0;
+    }
+    
+    .btn-remove-all {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    
+    .btn-remove-all:hover {
+        background-color: #333333;
+    }
+    
+    .basket-summary {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 2.5rem;
+        margin-top: 3rem;
+        color: #000000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e0e0e0;
+    }
+    
+    .summary-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.8rem;
+        text-align: center;
+    }
+    
+    .total-amount {
+        font-size: 2.2rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    
+    .checkout-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.2rem;
+    }
+    
+    .btn-checkout {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.9rem 2.2rem;
+        font-weight: 600;
+        border: 1px solid #000000;
+    }
+    
+    .btn-checkout:hover {
+        background-color: #333333;
+        transform: translateY(-2px);
+    }
+    
+    .btn-clear {
+        background-color: transparent;
+        color: #000000;
+        border: 1px solid #000000;
+        padding: 0.9rem 2.2rem;
+        font-weight: 600;
+    }
+    
+    .btn-clear:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .empty-basket {
+        text-align: center;
+        padding: 5rem 0;
+        color: #777777;
+        font-size: 1.3rem;
+    }
+    
+    @media (max-width: 768px) {
+        .basket-item {
+            flex-direction: column;
+        }
+        
+        .car-image-container {
+            width: 100%;
+            height: 220px;
+        }
+        
+        .checkout-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-checkout, .btn-clear {
+            width: 100%;
+        }
+    }
+</style>
 
-{% if basket_items %}
-    <ul class="basket-items-list">
+<div class="basket-container">
+    <h1 class="basket-title">КОРЗИНА</h1>
+    
+    {% if basket_items %}
+    <div class="basket-grid">
         {% for item in basket_items %}
-        <li class="basket-item">
-            <img src="/static/photo/{{ item.photo }}" alt="{{ item.make }} {{ item.model }}" class="basket-item-img">
-            <p class="basket-item-info">
-                <span class="basket-item-name">{{ item.make }} {{ item.model }} — {{ item.price }} ₽</span><br>
-                Кол-во: {{ item.quantity }}<br>
-                Сумма: {{ item.total }} ₽
-            </p>
-            <div class="basket-item-actions">
-                <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post" style="display:inline;">
-                    <input type="hidden" name="remove_type" value="one">
-                    <button type="submit" class="basket-remove-btn">Удалить одну</button>
-                </form>
-                <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post" style="display:inline;">
-                    <input type="hidden" name="remove_type" value="all">
-                    <button type="submit" class="basket-remove-btn">Удалить все</button>
-                </form>
+        <div class="basket-item">
+            <div class="car-image-container">
+                <img src="/static/photo/{{ item.photo }}" alt="{{ item.make }} {{ item.model }}" class="car-image">
             </div>
-        </li>
+            
+            <div class="car-details">
+                <h2 class="car-make-model">{{ item.make }} {{ item.model }}</h2>
+                <div class="car-price">{{ item.price }} ₽</div>
+                
+                <div class="quantity-controls">
+                    <span class="quantity-label">КОЛИЧЕСТВО:</span>
+                    <span class="quantity-value">{{ item.quantity }}</span>
+                </div>
+                
+                <div class="item-total">
+                    СУММА: {{ item.total }} ₽
+                </div>
+                
+                <div class="action-buttons">
+                    <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post">
+                        <input type="hidden" name="remove_type" value="one">
+                        <button type="submit" class="btn btn-remove-one">− УДАЛИТЬ 1</button>
+                    </form>
+                    <form action="{{ url_for('remove_from_basket', car_id=item.id) }}" method="post">
+                        <input type="hidden" name="remove_type" value="all">
+                        <button type="submit" class="btn btn-remove-all">× УДАЛИТЬ ВСЕ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-
+    </div>
+    
     <div class="basket-summary">
-        <h3>Итого: {{ total_price }} ₽</h3>
-        <form method="post" class="basket-action-form">
-            <button name="action" value="buy" class="basket-action-btn">Купить</button>
-            <button name="action" value="clear" class="basket-action-btn">Очистить корзину</button>
+        <h3 class="summary-title">ИТОГО</h3>
+        <div class="total-amount">{{ total_price }} ₽</div>
+        
+        <form method="post" class="checkout-buttons">
+            <button name="action" value="buy" class="btn btn-checkout">ОФОРМИТЬ ЗАКАЗ</button>
+            <button name="action" value="clear" class="btn btn-clear">ОЧИСТИТЬ КОРЗИНУ</button>
         </form>
     </div>
-{% else %}
-    <p>Корзина пуста</p>
-{% endif %}
+    {% else %}
+    <div class="empty-basket">
+        <p>ВАША КОРЗИНА ПУСТА</p>
+        <br><br><br><br><br><br><br><br>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
