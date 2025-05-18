@@ -1,57 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Админ-панель</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/admin.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+        .admin-card {
+            max-width: 1000px;
+            margin: auto;
+            margin-top: 5vh;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-50px);
+            opacity: 0;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        .admin-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .admin-card .card-header {
+            background-color: #1a1a1a;
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+        }
+        .admin-card .card-header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background-color: white;
+        }
+        .form-section h3 {
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1.5px solid #e0e0e0;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .form-control:focus {
+            border-color: #1a1a1a;
+            box-shadow: none;
+        }
+        .btn-submit {
+            border-radius: 10px;
+            background-color: #1a1a1a;
+            border-color: #1a1a1a;
+            color: white;
+            font-weight: bold;
+            padding: 12px;
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+        .btn-submit:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card admin-card shadow-lg" id="adminCard">
                     <div class="card-header text-center">
-                        <h1>Добавить новую машину</h1>
+                        <h1>Админ-панель - Добавить новый автомобиль</h1>
                     </div>
                     <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="make">Марка:</label>
-                                <input type="text" class="form-control input" id="make" name="make" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="model">Модель:</label>
-                                <input type="text" class="form-control input" id="model" name="model" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="generation">Поколение:</label>
-                                <input type="text" class="form-control input" id="generation" name="generation" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="price">Цена:</label>
-                                <input type="number" step="0.01" class="form-control input" id="price" name="price" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="color">Цвет:</label>
-                                <input type="text" class="form-control input" id="color" name="color" required>
-                            </div>
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="used" name="used" value="True">
-                                    <label class="custom-control-label" for="used">Б/у</label>
+                            <!-- Основная информация -->
+                            <div class="form-section">
+                                <h3>Основная информация</h3>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="make">Марка</label>
+                                        <input type="text" class="form-control" id="make" name="make" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="model">Модель</label>
+                                        <input type="text" class="form-control" id="model" name="model" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="generation">Поколение</label>
+                                        <input type="text" class="form-control" id="generation" name="generation" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="price">Цена ($)</label>
+                                        <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="color">Цвет</label>
+                                        <input type="text" class="form-control" id="color" name="color" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="drive_type">Привод</label>
+                                        <select class="form-control" id="drive_type" name="drive_type" required>
+                                            <option value="FWD">Передний</option>
+                                            <option value="RWD">Задний</option>
+                                            <option value="AWD">Полный</option>
+                                            <option value="4WD">4WD</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <div class="form-check mt-4">
+                                            <input class="form-check-input" type="checkbox" id="used" name="used">
+                                            <label class="form-check-label" for="used">Б/у автомобиль</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="photo">Фото</label>
+                                        <input type="file" class="form-control-file" id="photo" name="photo" accept="image/*">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="model_3d">3D модель (опционально)</label>
+                                        <input type="file" class="form-control-file" id="model_3d" name="model_3d" accept=".glb,.gltf,.obj,.fbx">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="drive_type">Drive Type:</label>
-                                <input type="text" class="form-control input" id="drive_type" name="drive_type" required>
+                            
+                            <!-- Технические характеристики -->
+                            <div class="form-section">
+                                <h3>Технические характеристики</h3>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="engine_type">Тип двигателя</label>
+                                        <select class="form-control" id="engine_type" name="engine_type" required>
+                                            <option value="Gasoline">Бензин</option>
+                                            <option value="Diesel">Дизель</option>
+                                            <option value="Hybrid">Гибрид</option>
+                                            <option value="Electric">Электрический</option>
+                                            <option value="Plug-in Hybrid">Plug-in Hybrid</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="transmission">Коробка передач</label>
+                                        <select class="form-control" id="transmission" name="transmission" required>
+                                            <option value="Manual">Механическая</option>
+                                            <option value="Automatic">Автоматическая</option>
+                                            <option value="CVT">Вариатор</option>
+                                            <option value="Dual-Clutch">Робот</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="year">Год выпуска</label>
+                                        <input type="number" class="form-control" id="year" name="year" min="1900" max="2099" required>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="mileage">Пробег (км)</label>
+                                        <input type="number" class="form-control" id="mileage" name="mileage" min="0">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="horsepower">Мощность (л.с.)</label>
+                                        <input type="number" class="form-control" id="horsepower" name="horsepower" min="0" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="torque">Крутящий момент (Нм)</label>
+                                        <input type="number" class="form-control" id="torque" name="torque" min="0" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="fuel_consumption">Расход топлива (л/100км)</label>
+                                        <input type="number" step="0.1" class="form-control" id="fuel_consumption" name="fuel_consumption" min="0" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="safety_rating">Рейтинг безопасности (0-5)</label>
+                                        <input type="number" step="0.1" class="form-control" id="safety_rating" name="safety_rating" min="0" max="5" required>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="photo">Фото:</label>
-                                <input type="file" id="photo" name="photo">
+                            
+                            <!-- Размеры и вместимость -->
+                            <div class="form-section">
+                                <h3>Размеры и вместимость</h3>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="seats">Количество мест</label>
+                                        <input type="number" class="form-control" id="seats" name="seats" min="1" max="20" required>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="doors">Количество дверей</label>
+                                        <input type="number" class="form-control" id="doors" name="doors" min="1" max="10" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="trunk_volume">Объем багажника (л)</label>
+                                        <input type="number" step="0.1" class="form-control" id="trunk_volume" name="trunk_volume" min="0" required>
+                                    </div>
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            
+                            <button type="submit" class="btn btn-submit btn-block">Добавить автомобиль</button>
                         </form>
                     </div>
                 </div>

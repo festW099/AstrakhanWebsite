@@ -21,12 +21,94 @@ def init_db():
             price REAL,
             color TEXT,
             used BOOLEAN,
-            drive_type TEXT
+            drive_type TEXT,
+            engine_type TEXT,
+            transmission TEXT,
+            year INTEGER,
+            mileage INTEGER,
+            horsepower INTEGER,
+            torque INTEGER,
+            fuel_consumption REAL,
+            seats INTEGER,
+            doors INTEGER,
+            trunk_volume REAL,
+            safety_rating REAL,
+            model_3d TEXT
         )
     ''')
     
     conn.commit()
     conn.close()
+    
+init_db()
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        # Основные данные
+        make = request.form['make']
+        model = request.form['model']
+        generation = request.form['generation']
+        price = float(request.form['price'])
+        color = request.form['color']
+        used = bool(request.form.get('used'))
+        drive_type = request.form['drive_type']
+        
+        # Новые характеристики
+        engine_type = request.form['engine_type']
+        transmission = request.form['transmission']
+        year = int(request.form['year'])
+        mileage = int(request.form['mileage'])
+        horsepower = int(request.form['horsepower'])
+        torque = int(request.form['torque'])
+        fuel_consumption = float(request.form['fuel_consumption'])
+        seats = int(request.form['seats'])
+        doors = int(request.form['doors'])
+        trunk_volume = float(request.form['trunk_volume'])
+        safety_rating = float(request.form['safety_rating'])
+
+        # Обработка фото
+        photo_filename = ''
+        if 'photo' in request.files:
+            photo = request.files['photo']
+            if photo.filename != '':
+                photo_path = os.path.join('static/photo', photo.filename)
+                photo.save(photo_path)
+                photo_filename = photo.filename
+        
+        # Обработка 3D модели
+        model_3d_filename = ''
+        if 'model_3d' in request.files:
+            model_3d = request.files['model_3d']
+            if model_3d.filename != '':
+                model_3d_path = os.path.join('static/models', model_3d.filename)
+                model_3d.save(model_3d_path)
+                model_3d_filename = model_3d.filename
+        
+        # Сохранение в БД
+        conn = sqlite3.connect(os.path.join('Base', 'database.db'))
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO cars (
+                photo, make, model, generation, price, color, used, drive_type,
+                engine_type, transmission, year, mileage, horsepower, torque,
+                fuel_consumption, seats, doors, trunk_volume, safety_rating, model_3d
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            photo_filename, make, model, generation, price, color, used, drive_type,
+            engine_type, transmission, year, mileage, horsepower, torque,
+            fuel_consumption, seats, doors, trunk_volume, safety_rating, model_3d_filename
+        ))
+        conn.commit()
+        conn.close()
+        
+        return redirect(url_for('admin'))
+    
+    return render_template('admin.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -41,39 +123,6 @@ def login():
             return "Invalid credentials"
     
     return render_template('login.html')
-
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    
-    if request.method == 'POST':
-        make = request.form['make']
-        model = request.form['model']
-        generation = request.form['generation']
-        price = float(request.form['price'])
-        color = request.form['color']
-        used = bool(request.form.get('used'))
-        drive_type = request.form['drive_type']
-
-        if 'photo' in request.files:
-            photo = request.files['photo']
-            if photo.filename != '':
-                photo_path = os.path.join('static/photo', photo.filename)
-                photo.save(photo_path)
-        
-        conn = sqlite3.connect(os.path.join('Base', 'database.db'))
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO cars (photo, make, model, generation, price, color, used, drive_type)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (photo.filename, make, model, generation, price, color, used, drive_type))
-        conn.commit()
-        conn.close()
-        
-        return redirect(url_for('admin'))
-    
-    return render_template('admin.html')
 
 @app.route('/catalog')
 def catalog():
@@ -210,6 +259,10 @@ def login_user():
 @app.route('/register_user')
 def register_user():
     return render_template('register.html')
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 @app.route('/add_to_basket/<int:car_id>', methods=['POST'])
 def add_to_basket(car_id):
