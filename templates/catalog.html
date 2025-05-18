@@ -116,7 +116,7 @@
                 <label for="used">Состояние:</label>
                 <select id="used" name="used" class="custom-select">
                     <option value="">Все </option>
-                    <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанные (</option>
+                    <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанные </option>
                     <option value="0" {% if request.args.get('used') == '0' %}selected{% endif %}>Новые </option>
                 </select>
             </div>
@@ -199,9 +199,7 @@
                             <p><strong>Коробка:</strong> {{ car.transmission }}</p>
                             <p><strong>Пробег:</strong> {{ "{:,.0f}".format(car.mileage).replace(",", " ") }} км</p>
                         </div>
-                        <form method="post" action="/catalog/{{ car.id }}">
-                            <button type="submit" class="add-to-basket-btn">ПОДРОБНЕЕ</button>
-                        </form>          
+                        <a href="/catalog/{{ car.id }}" class="add-to-basket-btn" style="text-decoration: none;">ПОДРОБНЕЕ</a>   
                     </div>
                 </div>
             {% endfor %}
@@ -482,7 +480,7 @@
     }
 
     .add-to-basket-btn:hover {
-        background-color: #333;
+        background-color: #000000;
     }
 
     @media (max-width: 768px) {

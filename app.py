@@ -42,6 +42,47 @@ def init_db():
 
 init_db()
 
+@app.route('/catalog/<int:car_id>')
+def car_details(car_id):
+    print(car_id)
+    conn = sqlite3.connect(os.path.join('Base', 'database.db'))
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT * FROM cars WHERE id = ?', (car_id,))
+    car = cursor.fetchone()
+    
+    conn.close()
+    
+    if not car:
+        return "Car not found", 404
+    
+    # Преобразуем данные в словарь для удобства работы в шаблоне
+    car_data = {
+        'id': car[0],
+        'photo': car[1],
+        'make': car[2],
+        'model': car[3],
+        'generation': car[4],
+        'price': car[5],
+        'color': car[6],
+        'used': bool(car[7]),
+        'drive_type': car[8],
+        'engine_type': car[9],
+        'transmission': car[10],
+        'year': car[11],
+        'mileage': car[12],
+        'horsepower': car[13],
+        'torque': car[14],
+        'fuel_consumption': car[15],
+        'seats': car[16],
+        'doors': car[17],
+        'trunk_volume': car[18],
+        'safety_rating': car[19],
+        'model_3d': car[20]
+    }
+    
+    return render_template('details.html', car=car_data)
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):

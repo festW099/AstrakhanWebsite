@@ -1,239 +1,375 @@
+{% extends "pattern.html" %}
+
+{% block content %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ car.make }} {{ car.model }} - Details</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-        }
-        .car-card {
-            max-width: 1200px;
-            margin: 40px auto;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            background-color: white;
-        }
-        .car-header {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+<html lang="ru"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>{{ car.make }} {{ car.model }} - Детали</title> 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> 
+<style> 
+    :root { 
+        --black: #1A1A1A; 
+        --gray-dark: #404040; 
+        --gray-medium: #808080; 
+        --gray-light: #D9D9D9; 
+        --white: #FFFFFF; 
+    }
+
+    body {
+        background: var(--white);
+        font-family: 'Inter', sans-serif;
+        color: var(--black);
+        line-height: 1.6;
+    }
+
+    .car-card {
+        max-width: 1280px;
+        margin: 2rem auto;
+        background: var(--white);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .car-header {
+        height: 150px;
+        padding: 2.5rem;
+        background: #000000;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .car-header h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.25rem;
+        color: var(--white);
+    }
+
+    .car-subtitle {
+        font-size: 1.1rem;
+        color: var(--gray-light);
+        opacity: 0.9;
+    }
+
+    .car-image {
+        align-items: center;
+        width: 100%;
+        height: 550px;
+        object-fit: cover;
+        border-bottom: 1px solid var(--gray-light);
+    }
+
+    .price-container {
+        padding: 2rem;
+        background: var(--white);
+        border-bottom: 1px solid var(--gray-light);
+        text-align: right;
+    }
+
+    .price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--black);
+        position: relative;
+        display: inline-block;
+    }
+
+    .status-badge {
+        font-size: 0.85rem;
+        padding: 0.35rem 1rem;
+        border-radius: 20px;
+        margin-left: 1rem;
+        vertical-align: middle;
+        background: var(--gray-light);
+        color: var(--black);
+        font-weight: 500;
+    }
+
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2.5rem;
+    }
+
+    .specs-category {
+        margin-bottom: 2rem;
+    }
+
+    .specs-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--black);
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .specs-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--gray-light);
+        margin-left: 0.75rem;
+    }
+
+    .spec-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gray-light);
+        transition: background 0.2s ease;
+    }
+
+    .spec-item:hover {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    .spec-label {
+        color: var(--gray-dark);
+        font-weight: 500;
+    }
+
+    .spec-value {
+        color: var(--black);
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .model-3d-container {
+        padding: 2rem;
+        background: var(--white);
+        border-top: 1px solid var(--gray-light);
+    }
+
+    model-viewer {
+        width: 100%;
+        height: 600px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--gray-light);
+        transition: box-shadow 0.3s ease;
+    }
+
+    model-viewer:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
         .car-header h1 {
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-size: 2rem;
         }
-        .car-header .subtitle {
-            font-weight: 300;
-            opacity: 0.8;
-        }
-        .car-image {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-bottom: 1px solid #eee;
-        }
-        .car-details {
-            padding: 30px;
-        }
-        .detail-section {
-            margin-bottom: 30px;
-        }
-        .detail-section h3 {
-            font-weight: 500;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .detail-row {
-            display: flex;
-            margin-bottom: 15px;
-        }
-        .detail-label {
-            font-weight: 500;
-            width: 200px;
-            color: #666;
-        }
-        .detail-value {
-            flex: 1;
-        }
-        .price {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin: 20px 0;
-            text-align: right;
-        }
-        .used-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 10px;
-        }
-        .used-badge.new {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        .used-badge.used {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        .model-3d-container {
-            width: 100%;
-            height: 500px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .model-3d-placeholder {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <div class="car-card">
-        <div class="car-header">
-            <h1>{{ car.make }} {{ car.model }}</h1>
-            <div class="subtitle">{{ car.generation }} • {{ car.year }} • {{ car.color }}</div>
-        </div>
         
-        <div class="car-details">
-            {% if car.photo %}
-            <img src="{{ car.photo }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
-            {% endif %}
-            
-            <div class="price">
-                ${{ "{:,.2f}".format(car.price) }}
-                <span class="used-badge {{ 'used' if car.used else 'new' }}">
-                    {{ 'Used' if car.used else 'New' }}
-                </span>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="detail-section">
-                        <h3>Specifications</h3>
-                        <div class="detail-row">
-                            <div class="detail-label">Make</div>
-                            <div class="detail-value">{{ car.make }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Model</div>
-                            <div class="detail-value">{{ car.model }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Generation</div>
-                            <div class="detail-value">{{ car.generation }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Year</div>
-                            <div class="detail-value">{{ car.year }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Color</div>
-                            <div class="detail-value">{{ car.color }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Mileage</div>
-                            <div class="detail-value">{{ "{:,}".format(car.mileage) }} km</div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>Engine & Performance</h3>
-                        <div class="detail-row">
-                            <div class="detail-label">Engine Type</div>
-                            <div class="detail-value">{{ car.engine_type }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Horsepower</div>
-                            <div class="detail-value">{{ car.horsepower }} HP</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Torque</div>
-                            <div class="detail-value">{{ car.torque }} Nm</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Fuel Consumption</div>
-                            <div class="detail-value">{{ car.fuel_consumption }} L/100km</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="detail-section">
-                        <h3>Transmission & Drivetrain</h3>
-                        <div class="detail-row">
-                            <div class="detail-label">Transmission</div>
-                            <div class="detail-value">{{ car.transmission }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Drive Type</div>
-                            <div class="detail-value">{{ car.drive_type }}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>Dimensions</h3>
-                        <div class="detail-row">
-                            <div class="detail-label">Doors</div>
-                            <div class="detail-value">{{ car.doors }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Seats</div>
-                            <div class="detail-value">{{ car.seats }}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Trunk Volume</div>
-                            <div class="detail-value">{{ car.trunk_volume }} L</div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>Safety</h3>
-                        <div class="detail-row">
-                            <div class="detail-label">Safety Rating</div>
-                            <div class="detail-value">
-                                {% if car.safety_rating %}
-                                    {{ car.safety_rating }}/5
-                                {% else %}
-                                    Not rated
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+        .specs-grid {
+            grid-template-columns: 1fr;
+            padding: 1.5rem;
+        }
+        
+        model-viewer {
+            height: 400px;
+        }
+    }
+
+    .add-to-basket-btn {
+        align-items: center;
+        width: 280px;
+        padding: 12px;
+        background-color: var(--black);
+        color: var(--white);
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-left: 5%;
+        margin-bottom: 5%;
+    }
+
+    .add-to-basket-btn:hover {
+        transform: scale(1.05);
+        background-color: #000000;
+    }
+
+
+    .back-arrow {
+    width: 192px;
+    margin-left: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 50px;
+    background-color: #000000;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    font-weight: 500;
+    border: 1px solid #000000;
+    }
+
+    .back-arrow:hover {
+        text-decoration: none;
+        color: #ffffff; 
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-arrow:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-arrow svg {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .back-arrow:hover svg {
+        transform: translateX(-4px);
+    }
+
+    .back-arrow h2 {
+        margin: 0;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+</style>
+<br><br><br><br><br>
+</head> 
+<body> 
+    <a href="/catalog" class="back-arrow">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>Вернуться</h2>
+    </a>
+    <div class="car-card"> 
+        <div class="car-header">
+            <div class="car-header-content">
+                <div class="car-title-wrapper">
+                    <h1>{{ car.make }} {{ car.model }}</h1>
+                    <div class="car-subtitle">{{ car.generation }} • {{ car.year }} • {{ car.color }}</div>
                 </div>
             </div>
-            
-            {% if car.model_3d %}
-            <div class="detail-section">
-                <h3>3D Model</h3>
-                <div class="model-3d-container">
-                    <!-- Здесь можно встроить 3D модель -->
-                    <iframe src="{{ car.model_3d }}" width="100%" height="100%" style="border:none;"></iframe>
-                </div>
-            </div>
-            {% endif %}
+        </div>
+
+    {% if car.photo %}
+    <img src="../static/photo/{{ car.photo }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+    {% endif %}
+
+    <div class="price-container">
+        <div class="price">
+            ${{ "{:,.2f}".format(car.price) }}
+            <span class="status-badge">{{ 'Б/У' if car.used else 'Новый' }}</span>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <div class="specs-grid">
+        <div class="specs-category">
+            <div class="specs-title">Основные</div>
+            <div class="spec-item">
+                <span class="spec-label">Марка</span>
+                <span class="spec-value">{{ car.make }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Модель</span>
+                <span class="spec-value">{{ car.model }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Поколение</span>
+                <span class="spec-value">{{ car.generation }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Пробег</span>
+                <span class="spec-value">{{ "{:,}".format(car.mileage) }} км</span>
+            </div>
+        </div>
+
+        <div class="specs-category">
+            <div class="specs-title">Двигатель</div>
+            <div class="spec-item">
+                <span class="spec-label">Тип</span>
+                <span class="spec-value">{{ car.engine_type }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Мощность</span>
+                <span class="spec-value">{{ car.horsepower }} л.с.</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Крутящий момент</span>
+                <span class="spec-value">{{ car.torque }} Нм</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Расход топлива</span>
+                <span class="spec-value">{{ car.fuel_consumption }} л/100км</span>
+            </div>
+        </div>
+
+        <div class="specs-category">
+            <div class="specs-title">Трансмиссия</div>
+            <div class="spec-item">
+                <span class="spec-label">Коробка</span>
+                <span class="spec-value">{{ car.transmission }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Привод</span>
+                <span class="spec-value">{{ car.drive_type }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Двери</span>
+                <span class="spec-value">{{ car.doors }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Места</span>
+                <span class="spec-value">{{ car.seats }}</span>
+            </div>
+        </div>
+    </div>
+
+    <form action="{{ url_for('add_to_basket', car_id=car.id) }}" method="post">
+        <button type="submit" class="add-to-basket-btn">ДОБАВИТЬ В КОРЗИНУ</button>
+    </form>   
+
+    {% if car.model_3d %}
+    <div class="model-3d-container">
+        <div class="specs-title">3D МОДЕЛЬ</div>
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+        <model-viewer 
+            src="{{ url_for('static', filename='models/future_car.glb') }}" 
+            alt="3D модель"
+            ar
+            auto-rotate
+            camera-controls
+            shadow-intensity="1"
+            exposure="1.2"
+            environment-image="neutral"
+        ></model-viewer>
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body> </html> 
+{% endblock %}
