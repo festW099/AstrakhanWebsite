@@ -34,7 +34,8 @@ def init_db():
             doors INTEGER,
             trunk_volume REAL,
             safety_rating REAL,
-            model_3d TEXT
+            model_3d TEXT,
+            statuc TEXT NOT NULL
         )
     ''')
     
@@ -64,6 +65,59 @@ def init_db():
     conn.close()
 
 init_db()
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    
+    # Подключаемся к основной базе данных
+    main_db_path = os.path.join('Base', 'database.db')
+    conn_main = sqlite3.connect(main_db_path)
+    cursor_main = conn_main.cursor()
+    
+    # Получаем общее количество машин
+    cursor_main.execute('SELECT COUNT(*) FROM cars')
+    total_cars = cursor_main.fetchone()[0]
+    
+    cursor_main.execute('SELECT COUNT(*) FROM contacts')
+    total_comment = cursor_main.fetchone()[0]
+    
+    cursor_main.execute('SELECT COUNT(*) FROM reviews')
+    total_reviews = cursor_main.fetchone()[0]
+    
+    conn_main.close()
+    
+    # Подключаемся к базе данных заказов
+    orders_db_path = os.path.join('Base', 'orders.db')
+    conn_orders = sqlite3.connect(orders_db_path)
+    cursor_orders = conn_orders.cursor()
+    
+    # Получаем общее количество заказов
+    cursor_orders.execute('SELECT COUNT(*) FROM orders')
+    total_orders = cursor_orders.fetchone()[0]
+    
+    # Получаем 2 последних заказа (только основную информацию без данных о машинах)
+    cursor_orders.execute('''
+        SELECT 
+            order_id, 
+            order_date, 
+            phone_number, 
+            total_price
+        FROM orders
+        ORDER BY order_date DESC
+        LIMIT 2
+    ''')
+    last_orders = cursor_orders.fetchall()
+    
+    conn_orders.close()
+    
+    return render_template('admin_panel.html',
+                         total_cars=total_cars,
+                         total_reviews=total_reviews,
+                         total_orders=total_orders,
+                         last_orders=last_orders,
+                         total_comment=total_comment)
 
 @app.route('/catalog/<int:car_id>')
 def car_details(car_id):
@@ -105,8 +159,8 @@ def car_details(car_id):
     
     return render_template('details.html', car=car_data)
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
+@app.route('/admin/add', methods=['GET', 'POST'])
+def admin_add():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     
@@ -171,7 +225,7 @@ def admin():
         
         return redirect(url_for('admin'))
     
-    return render_template('admin.html')
+    return render_template('admin_add.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

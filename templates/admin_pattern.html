@@ -148,127 +148,44 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active">
+                    <a href="/admin" class="nav-link active">
                         <i class="fas fa-tachometer-alt"></i>
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/admin/add" class="nav-link">
                         <i class="fas fa-car"></i>
                         Создать машину
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/admin/comments" class="nav-link">
                         <i class="fas fa-comments"></i>
                         Комментарии
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/admin/contact" class="nav-link">
                         <i class="fas fa-envelope"></i>
                         Обратная связь
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/admin/orders" class="nav-link">
                         <i class="fas fa-shopping-cart"></i>
                         Заказы
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        Выйти
+                    </a>
+                </li>
             </ul>
         </div>
-        
-        <!-- Основное содержимое -->
-        <div class="main-content">
-            <div class="content-header">
-                <h2>Dashboard</h2>
-                <div>
-                    <span class="mr-3">Admin User</span>
-                    <i class="fas fa-user-circle fa-lg"></i>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Машины</h5>
-                            <p class="card-text display-4">24</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Комментарии</h5>
-                            <p class="card-text display-4">56</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Обращения</h5>
-                            <p class="card-text display-4">12</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Заказы</h5>
-                            <p class="card-text display-4">8</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card mt-4">
-                <div class="card-header">
-                    Последние заказы
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Клиент</th>
-                                <th>Машина</th>
-                                <th>Дата</th>
-                                <th>Статус</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#1001</td>
-                                <td>Иван Иванов</td>
-                                <td>Tesla Model S</td>
-                                <td>2023-05-15</td>
-                                <td><span class="badge badge-success">Завершен</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-dark-custom">Просмотр</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#1002</td>
-                                <td>Петр Петров</td>
-                                <td>BMW X5</td>
-                                <td>2023-05-14</td>
-                                <td><span class="badge badge-warning">В процессе</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-dark-custom">Просмотр</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    {% block content %}{% endblock %}
     </div>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
