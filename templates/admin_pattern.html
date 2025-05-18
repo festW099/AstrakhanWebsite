@@ -148,31 +148,31 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="/admin" class="nav-link active">
+                    <a href="/admin" class="nav-link {% if request.path == '/admin' %}active{% endif %}">
                         <i class="fas fa-tachometer-alt"></i>
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/add" class="nav-link">
+                    <a href="/admin/add" class="nav-link {% if request.path == '/admin/add' %}active{% endif %}">
                         <i class="fas fa-car"></i>
                         Создать машину
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/comments" class="nav-link">
+                    <a href="/admin/comments" class="nav-link {% if request.path == '/admin/comments' %}active{% endif %}">
                         <i class="fas fa-comments"></i>
                         Комментарии
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/contact" class="nav-link">
+                    <a href="/admin/contact" class="nav-link {% if request.path == '/admin/contact' %}active{% endif %}">
                         <i class="fas fa-envelope"></i>
                         Обратная связь
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/orders" class="nav-link">
+                    <a href="/admin/orders" class="nav-link {% if request.path == '/admin/orders' %}active{% endif %}">
                         <i class="fas fa-shopping-cart"></i>
                         Заказы
                     </a>
