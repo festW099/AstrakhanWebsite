@@ -6,12 +6,13 @@
     <div class="filter-section">
         <h2>ФИЛЬТРЫ</h2>
         <form action="" method="GET">
+            <!-- Основные фильтры -->
             <div class="filter-group">
                 <label for="make">Марка:</label>
                 <select id="make" name="make" class="custom-select">
-                    <option value="">Выберите марку</option>
+                    <option value="">Все марки </option>
                     {% for make in makes %}
-                        <option value="{{ make }}" {% if request.args.get('make') == make %}selected{% endif %}>{{ make }}</option>
+                        <option value="{{ make }}" {% if request.args.get('make') == make %}selected{% endif %}>{{ make }} </option>
                     {% endfor %}
                 </select>
             </div>
@@ -19,9 +20,19 @@
             <div class="filter-group">
                 <label for="model">Модель:</label>
                 <select id="model" name="model" class="custom-select">
-                    <option value="">Выберите модель</option>
+                    <option value="">Все модели </option>
                     {% for model in models %}
-                        <option value="{{ model }}" {% if request.args.get('model') == model %}selected{% endif %}>{{ model }}</option>
+                        <option value="{{ model }}" {% if request.args.get('model') == model %}selected{% endif %}>{{ model }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="generation">Поколение:</label>
+                <select id="generation" name="generation" class="custom-select">
+                    <option value="">Все поколения</option>
+                    {% for gen in generations %}
+                        <option value="{{ gen }}" {% if request.args.get('generation') == gen %}selected{% endif %}>{{ gen }} </option>
                     {% endfor %}
                 </select>
             </div>
@@ -29,21 +40,74 @@
             <div class="filter-group">
                 <label>Цена (₽):</label>
                 <div class="price-range">
-                    <input type="range" name="price_min" min="0" max="{{ max_price }}" value="{{ request.args.get('price_min', 0) }}" oninput="priceMinOutput.value = this.value">
-                    <input type="range" name="price_max" min="0" max="{{ max_price }}" value="{{ request.args.get('price_max', max_price) }}" oninput="priceMaxOutput.value = this.value">
+                    <div class="price-labels">
+                        <span>0 ₽</span>
+                        <span>{{ "{:,.0f}".format(max_price).replace(",", " ") }} ₽</span>
+                    </div>
+                    <input type="range" name="price_min" min="0" max="{{ max_price }}" 
+                           value="{{ request.args.get('price_min', 0) }}" 
+                           oninput="priceMinOutput.value = this.value + ' ₽'">
+                    <input type="range" name="price_max" min="0" max="{{ max_price }}" 
+                           value="{{ request.args.get('price_max', max_price) }}" 
+                           oninput="priceMaxOutput.value = this.value + ' ₽'">
                     <div class="price-output">
-                        <output id="priceMinOutput">{{ request.args.get('price_min', 0) }}</output> - 
-                        <output id="priceMaxOutput">{{ request.args.get('price_max', max_price) }}</output>
+                        <output id="priceMinOutput">{{ "{:,.0f}".format(request.args.get('price_min', 0)|float).replace(",", " ") }} ₽</output> - 
+                        <output id="priceMaxOutput">{{ "{:,.0f}".format(request.args.get('price_max', max_price)|float).replace(",", " ") }} ₽</output>
                     </div>
                 </div>
             </div>
 
+            <!-- Технические характеристики -->
+            <div class="filter-group">
+                <label for="engine_type">Тип двигателя:</label>
+                <select id="engine_type" name="engine_type" class="custom-select">
+                    <option value="">Все типы</option>
+                    {% for engine in engine_types %}
+                        <option value="{{ engine }}" {% if request.args.get('engine_type') == engine %}selected{% endif %}>{{ engine }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="transmission">Коробка передач:</label>
+                <select id="transmission" name="transmission" class="custom-select">
+                    <option value="">Все типы</option>
+                    {% for trans in transmissions %}
+                        <option value="{{ trans }}" {% if request.args.get('transmission') == trans %}selected{% endif %}>{{ trans }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="year">Год выпуска:</label>
+                <select id="year" name="year" class="custom-select">
+                    <option value="">Все годы</option>
+                    {% for year in years %}
+                        <option value="{{ year }}" {% if request.args.get('year') == year|string %}selected{% endif %}>{{ year }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="horsepower">Мощность (л.с.):</label>
+                <div class="horsepower-range">
+                    <input type="number" id="horsepower_min" name="horsepower_min" 
+                           class="custom-input" placeholder="От" min="0"
+                           value="{{ request.args.get('horsepower_min', '') }}">
+                    <span>-</span>
+                    <input type="number" id="horsepower_max" name="horsepower_max" 
+                           class="custom-input" placeholder="До" min="0"
+                           value="{{ request.args.get('horsepower_max', '') }}">
+                </div>
+            </div>
+
+            <!-- Дополнительные фильтры -->
             <div class="filter-group">
                 <label for="color">Цвет:</label>
                 <select id="color" name="color" class="custom-select">
-                    <option value="">Выберите цвет</option>
+                    <option value="">Все цвета </option>
                     {% for color in colors %}
-                        <option value="{{ color }}" {% if request.args.get('color') == color %}selected{% endif %}>{{ color }}</option>
+                        <option value="{{ color }}" {% if request.args.get('color') == color %}selected{% endif %}>{{ color }} </option>
                     {% endfor %}
                 </select>
             </div>
@@ -51,24 +115,67 @@
             <div class="filter-group">
                 <label for="used">Состояние:</label>
                 <select id="used" name="used" class="custom-select">
-                    <option value="">Все</option>
-                    <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанный</option>
-                    <option value="0" {% if request.args.get('used') == '0' %}selected{% endif %}>Новый</option>
+                    <option value="">Все </option>
+                    <option value="1" {% if request.args.get('used') == '1' %}selected{% endif %}>Подержанные (</option>
+                    <option value="0" {% if request.args.get('used') == '0' %}selected{% endif %}>Новые </option>
                 </select>
             </div>
 
             <div class="filter-group">
                 <label for="drive_type">Тип привода:</label>
                 <select id="drive_type" name="drive_type" class="custom-select">
-                    <option value="">Выберите тип привода</option>
-                    <option value="Полный" {% if request.args.get('drive_type') == 'Полный' %}selected{% endif %}>Полный</option>
-                    <option value="Задний" {% if request.args.get('drive_type') == 'Задний' %}selected{% endif %}>Задний</option>
-                    <option value="Передний" {% if request.args.get('drive_type') == 'Передний' %}selected{% endif %}>Передний</option>
+                    <option value="">Все типы</option>
+                    <option value="Полный" {% if request.args.get('drive_type') == 'Полный' %}selected{% endif %}>Полный </option>
+                    <option value="Задний" {% if request.args.get('drive_type') == 'Задний' %}selected{% endif %}>Задний </option>
+                    <option value="Передний" {% if request.args.get('drive_type') == 'Передний' %}selected{% endif %}>Передний </option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="mileage">Пробег (км):</label>
+                <div class="mileage-range">
+                    <input type="number" id="mileage_min" name="mileage_min" 
+                           class="custom-input" placeholder="От" min="0" step="1000"
+                           value="{{ request.args.get('mileage_min', '') }}">
+                    <span>-</span>
+                    <input type="number" id="mileage_max" name="mileage_max" 
+                           class="custom-input" placeholder="До" min="0" step="1000"
+                           value="{{ request.args.get('mileage_max', '') }}">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="seats">Количество мест:</label>
+                <select id="seats" name="seats" class="custom-select">
+                    <option value="">Любое</option>
+                    {% for seat in seats %}
+                        <option value="{{ seat }}" {% if request.args.get('seats') == seat|string %}selected{% endif %}>{{ seat }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="doors">Количество дверей:</label>
+                <select id="doors" name="doors" class="custom-select">
+                    <option value="">Любое</option>
+                    {% for door in doors %}
+                        <option value="{{ door }}" {% if request.args.get('doors') == door|string %}selected{% endif %}>{{ door }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="safety_rating">Рейтинг безопасности:</label>
+                <select id="safety_rating" name="safety_rating" class="custom-select">
+                    <option value="">Любой</option>
+                    <option value="3" {% if request.args.get('safety_rating') == '3' %}selected{% endif %}>3+</option>
+                    <option value="4" {% if request.args.get('safety_rating') == '4' %}selected{% endif %}>4+</option>
+                    <option value="5" {% if request.args.get('safety_rating') == '5' %}selected{% endif %}>5</option>
                 </select>
             </div>
 
             <div class="filter-buttons">
-                <button type="submit" class="apply-btn">ПРИМЕНИТЬ</button>
+                <button type="submit" class="apply-btn">ПРИМЕНИТЬ </button>
                 <a href="{{ url_for('catalog') }}" class="reset-btn">СБРОСИТЬ</a>
             </div>
         </form>
@@ -87,13 +194,14 @@
                         <div class="car-specs">
                             <p><strong>Поколение:</strong> {{ car.generation }}</p>
                             <p><strong>Цена:</strong> {{ "{:,.0f}".format(car.price).replace(",", " ") }} ₽</p>
-                            <p><strong>Цвет:</strong> {{ car.color }}</p>
-                            <p><strong>Состояние:</strong> {% if car.used %}Подержанный{% else %}Новый{% endif %}</p>
-                            <p><strong>Привод:</strong> {{ car.drive_type }}</p>
+                            <p><strong>Год:</strong> {{ car.year }}</p>
+                            <p><strong>Двигатель:</strong> {{ car.engine_type }}, {{ car.horsepower }} л.с.</p>
+                            <p><strong>Коробка:</strong> {{ car.transmission }}</p>
+                            <p><strong>Пробег:</strong> {{ "{:,.0f}".format(car.mileage).replace(",", " ") }} км</p>
                         </div>
-                        <form action="{{ url_for('add_to_basket', car_id=car.id) }}" method="post">
-                            <button type="submit" class="add-to-basket-btn">ДОБАВИТЬ В КОРЗИНУ</button>
-                        </form>                        
+                        <form method="post" action="/catalog/{{ car.id }}">
+                            <button type="submit" class="add-to-basket-btn">ПОДРОБНЕЕ</button>
+                        </form>          
                     </div>
                 </div>
             {% endfor %}
@@ -102,6 +210,7 @@
 </div>
 
 <style>
+    
     :root {
         --black: #1a1a1a;
         --white: #ffffff;
@@ -109,6 +218,19 @@
         --dark-gray: #e0e0e0;
         --text-gray: #666666;
     }
+
+    .horsepower-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.horsepower-range .custom-input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
     body {
         font-family: 'Roboto', sans-serif;
@@ -133,6 +255,33 @@
         margin-right: 20px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
+
+    .mileage-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mileage-range .custom-input {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Общий стиль для всех range-фильтров */
+.range-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.range-filter .custom-input {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
     .filter-section h2 {
         font-size: 18px;

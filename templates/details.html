@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ car.make }} {{ car.model }} - Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+        .car-card {
+            max-width: 1200px;
+            margin: 40px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        .car-header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .car-header h1 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .car-header .subtitle {
+            font-weight: 300;
+            opacity: 0.8;
+        }
+        .car-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        .car-details {
+            padding: 30px;
+        }
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        .detail-section h3 {
+            font-weight: 500;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            font-weight: 500;
+            width: 200px;
+            color: #666;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .used-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .used-badge.new {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .used-badge.used {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .model-3d-container {
+            width: 100%;
+            height: 500px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .model-3d-placeholder {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="car-card">
+        <div class="car-header">
+            <h1>{{ car.make }} {{ car.model }}</h1>
+            <div class="subtitle">{{ car.generation }} • {{ car.year }} • {{ car.color }}</div>
+        </div>
+        
+        <div class="car-details">
+            {% if car.photo %}
+            <img src="{{ car.photo }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+            {% endif %}
+            
+            <div class="price">
+                ${{ "{:,.2f}".format(car.price) }}
+                <span class="used-badge {{ 'used' if car.used else 'new' }}">
+                    {{ 'Used' if car.used else 'New' }}
+                </span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-section">
+                        <h3>Specifications</h3>
+                        <div class="detail-row">
+                            <div class="detail-label">Make</div>
+                            <div class="detail-value">{{ car.make }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Model</div>
+                            <div class="detail-value">{{ car.model }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Generation</div>
+                            <div class="detail-value">{{ car.generation }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Year</div>
+                            <div class="detail-value">{{ car.year }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Color</div>
+                            <div class="detail-value">{{ car.color }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Mileage</div>
+                            <div class="detail-value">{{ "{:,}".format(car.mileage) }} km</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Engine & Performance</h3>
+                        <div class="detail-row">
+                            <div class="detail-label">Engine Type</div>
+                            <div class="detail-value">{{ car.engine_type }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Horsepower</div>
+                            <div class="detail-value">{{ car.horsepower }} HP</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Torque</div>
+                            <div class="detail-value">{{ car.torque }} Nm</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Fuel Consumption</div>
+                            <div class="detail-value">{{ car.fuel_consumption }} L/100km</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="detail-section">
+                        <h3>Transmission & Drivetrain</h3>
+                        <div class="detail-row">
+                            <div class="detail-label">Transmission</div>
+                            <div class="detail-value">{{ car.transmission }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Drive Type</div>
+                            <div class="detail-value">{{ car.drive_type }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Dimensions</h3>
+                        <div class="detail-row">
+                            <div class="detail-label">Doors</div>
+                            <div class="detail-value">{{ car.doors }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Seats</div>
+                            <div class="detail-value">{{ car.seats }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Trunk Volume</div>
+                            <div class="detail-value">{{ car.trunk_volume }} L</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Safety</h3>
+                        <div class="detail-row">
+                            <div class="detail-label">Safety Rating</div>
+                            <div class="detail-value">
+                                {% if car.safety_rating %}
+                                    {{ car.safety_rating }}/5
+                                {% else %}
+                                    Not rated
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if car.model_3d %}
+            <div class="detail-section">
+                <h3>3D Model</h3>
+                <div class="model-3d-container">
+                    <!-- Здесь можно встроить 3D модель -->
+                    <iframe src="{{ car.model_3d }}" width="100%" height="100%" style="border:none;"></iframe>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

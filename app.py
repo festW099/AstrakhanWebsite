@@ -39,7 +39,7 @@ def init_db():
     
     conn.commit()
     conn.close()
-    
+
 init_db()
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -130,14 +130,25 @@ def catalog():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
+    # Получаем параметры фильтрации
     make = request.args.get('make', '')
     model = request.args.get('model', '')
+    generation = request.args.get('generation', '')
     price_min = float(request.args.get('price_min', 0))
     price_max = float(request.args.get('price_max', 1e9))
+    engine_type = request.args.get('engine_type', '')
+    transmission = request.args.get('transmission', '')
+    year = request.args.get('year', '')
+    horsepower = request.args.get('horsepower', '')
     color = request.args.get('color', '')
     used = request.args.get('used', '')
     drive_type = request.args.get('drive_type', '')
+    mileage = request.args.get('mileage', '')
+    seats = request.args.get('seats', '')
+    doors = request.args.get('doors', '')
+    safety_rating = request.args.get('safety_rating', '')
 
+    # Основной запрос для фильтрации
     query = 'SELECT * FROM cars WHERE 1=1'
     params = []
 
@@ -147,6 +158,18 @@ def catalog():
     if model:
         query += ' AND model = ?'
         params.append(model)
+    if generation:
+        query += ' AND generation = ?'
+        params.append(generation)
+    if engine_type:
+        query += ' AND engine_type = ?'
+        params.append(engine_type)
+    if transmission:
+        query += ' AND transmission = ?'
+        params.append(transmission)
+    if year:
+        query += ' AND year = ?'
+        params.append(year)
     if color:
         query += ' AND color = ?'
         params.append(color)
@@ -156,97 +179,101 @@ def catalog():
     if drive_type:
         query += ' AND drive_type = ?'
         params.append(drive_type)
+    if seats:
+        query += ' AND seats = ?'
+        params.append(seats)
+    if doors:
+        query += ' AND doors = ?'
+        params.append(doors)
+    if safety_rating:
+        query += ' AND safety_rating >= ?'
+        params.append(float(safety_rating))
 
+    # Фильтры по диапазонам
     query += ' AND price BETWEEN ? AND ?'
     params.append(price_min)
     params.append(price_max)
 
+    # Обработка пробега (диапазон)
+    mileage_min = request.args.get('mileage_min')
+    mileage_max = request.args.get('mileage_max')
+    if mileage_min and mileage_max:
+        query += ' AND mileage BETWEEN ? AND ?'
+        params.extend([mileage_min, mileage_max])
+    elif mileage_min:
+        query += ' AND mileage >= ?'
+        params.append(mileage_min)
+    elif mileage_max:
+        query += ' AND mileage <= ?'
+        params.append(mileage_max)
+
+    # Обработка мощности (диапазон)
+    horsepower_min = request.args.get('horsepower_min')
+    horsepower_max = request.args.get('horsepower_max')
+    if horsepower_min and horsepower_max:
+        query += ' AND horsepower BETWEEN ? AND ?'
+        params.extend([horsepower_min, horsepower_max])
+    elif horsepower_min:
+        query += ' AND horsepower >= ?'
+        params.append(horsepower_min)
+    elif horsepower_max:
+        query += ' AND horsepower <= ?'
+        params.append(horsepower_max)
+
     cursor.execute(query, params)
     cars = cursor.fetchall()
 
-    cursor.execute('SELECT DISTINCT make FROM cars')
+    # Получаем уникальные значения для фильтров
+    cursor.execute('SELECT DISTINCT make FROM cars ORDER BY make')
     makes = [row[0] for row in cursor.fetchall()]
 
-    cursor.execute('SELECT DISTINCT model FROM cars')
+    cursor.execute('SELECT DISTINCT model FROM cars ORDER BY model')
     models = [row[0] for row in cursor.fetchall()]
 
-    cursor.execute('SELECT DISTINCT color FROM cars')
+    cursor.execute('SELECT DISTINCT generation FROM cars ORDER BY generation')
+    generations = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT DISTINCT engine_type FROM cars ORDER BY engine_type')
+    engine_types = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT DISTINCT transmission FROM cars ORDER BY transmission')
+    transmissions = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT DISTINCT year FROM cars ORDER BY year DESC')
+    years = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT DISTINCT color FROM cars ORDER BY color')
     colors = [row[0] for row in cursor.fetchall()]
 
+    cursor.execute('SELECT DISTINCT seats FROM cars ORDER BY seats')
+    seats = [row[0] for row in cursor.fetchall()]
+
+    cursor.execute('SELECT DISTINCT doors FROM cars ORDER BY doors')
+    doors = [row[0] for row in cursor.fetchall()]
+
     cursor.execute('SELECT MAX(price) FROM cars')
-    max_price = cursor.fetchone()[0] or 1000000
+    max_price = max_price = float(cursor.fetchone()[0] or 1000000)
 
     conn.close()
 
     return render_template('catalog.html',
-                           cars=cars,
-                           makes=makes,
-                           models=models,
-                           colors=colors,
-                           drive_type=drive_type,
-                           max_price=max_price)
+                         cars=cars,
+                         makes=makes,
+                         models=models,
+                         generations=generations,
+                         engine_types=engine_types,
+                         transmissions=transmissions,
+                         years=years,
+                         colors=colors,
+                         seats=seats,
+                         doors=doors,
+                         drive_type=drive_type,
+                         max_price=max_price)
 
 
 @app.route('/')
 def catalog_1():
-    conn = sqlite3.connect(os.path.join('Base', 'database.db'))
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    make = request.args.get('make', '')
-    model = request.args.get('model', '')
-    price_min = float(request.args.get('price_min', 0))
-    price_max = float(request.args.get('price_max', 1e9))
-    color = request.args.get('color', '')
-    used = request.args.get('used', '')
-    drive_type = request.args.get('drive_type', '')
-
-    query = 'SELECT * FROM cars WHERE 1=1'
-    params = []
-
-    if make:
-        query += ' AND make = ?'
-        params.append(make)
-    if model:
-        query += ' AND model = ?'
-        params.append(model)
-    if color:
-        query += ' AND color = ?'
-        params.append(color)
-    if used != '':
-        query += ' AND used = ?'
-        params.append(int(used))
-    if drive_type:
-        query += ' AND drive_type = ?'
-        params.append(drive_type)
-
-    query += ' AND price BETWEEN ? AND ?'
-    params.append(price_min)
-    params.append(price_max)
-
-    cursor.execute(query, params)
-    cars = cursor.fetchall()
-
-    cursor.execute('SELECT DISTINCT make FROM cars')
-    makes = [row[0] for row in cursor.fetchall()]
-
-    cursor.execute('SELECT DISTINCT model FROM cars')
-    models = [row[0] for row in cursor.fetchall()]
-
-    cursor.execute('SELECT DISTINCT color FROM cars')
-    colors = [row[0] for row in cursor.fetchall()]
-
-    cursor.execute('SELECT MAX(price) FROM cars')
-    max_price = cursor.fetchone()[0] or 1000000
-
-    conn.close()
-
-    return render_template('catalog.html',
-                           cars=cars,
-                           makes=makes,
-                           models=models,
-                           colors=colors,
-                           max_price=max_price)
+    return redirect(url_for('catalog'))
 
 @app.route('/about')
 def about():
