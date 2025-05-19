@@ -13,25 +13,31 @@
     .review-card {
         background: #fff;
         border-radius: 8px;
-        padding: 25px;
+        padding: 0;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: 1px solid #e0e0e0;
-        height: 200px; /* Фиксированная высота */
+        height: 200px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         overflow: hidden;
     }
     .review-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
-    .review-card h4 {
-        margin: 0 0 15px 0;
-        color: #222;
-        font-size: 1.2em;
+    .review-header {
+        background: #000;
+        color: #fff;
+        padding: 12px 20px;
+        font-size: 1.1em;
         font-weight: 600;
+    }
+    .review-content {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
     }
     .review-card p {
         color: #444;
@@ -41,14 +47,14 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Ограничение текста до 3 строк */
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
     }
     .stars {
         color: #333;
         font-size: 1.3em;
         letter-spacing: 2px;
-        margin-top: auto; /* Прижимаем к низу карточки */
+        margin-top: auto;
     }
     .stars .filled {
         color: #000;
@@ -72,18 +78,18 @@
 <div class="reviews-container">
     {% for review in reviews %}
     <div class="review-card scroll-animate animate-from-bottom">
-        <div>
-            <h4>{{ review[0] }}</h4>
+        <div class="review-header">{{ review[0] }}</div>
+        <div class="review-content">
             <p>{{ review[1] }}</p>
-        </div>
-        <div class="stars">
-            {% for i in range(5) %}
-                {% if i < review[2] %}
-                    <span class="filled">★</span>
-                {% else %}
-                    <span>☆</span>
-                {% endif %}
-            {% endfor %}
+            <div class="stars">
+                {% for i in range(5) %}
+                    {% if i < review[2] %}
+                        <span class="filled">★</span>
+                    {% else %}
+                        <span>☆</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% endfor %}
