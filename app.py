@@ -11,7 +11,6 @@ def init_db():
     conn = sqlite3.connect(os.path.join('Base', 'database.db'))
     cursor = conn.cursor()
     
-    # Таблица автомобилей
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS cars (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +38,6 @@ def init_db():
         )
     ''')
     
-    # Таблица отзывов
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS reviews (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +49,6 @@ def init_db():
         )
     ''')
     
-    # Таблица контактов
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS contacts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,7 +70,6 @@ def init_order_db():
     conn = sqlite3.connect(orders_db_path)
     cursor = conn.cursor()
     
-    # Создаём таблицы для заказов
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS orders (
         order_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -132,22 +128,19 @@ def pay():
         expiry = request.form.get('expiry')
         phone_number = request.form.get('phone_number')
 
-        # Инициализация базы данных заказов
         init_order_db()
         
         conn = sqlite3.connect(os.path.join('Base', 'orders.db'))
         cursor = conn.cursor()
         
         if (card_number == '0000000000000000' or card_number == '0000 0000 0000') and cvv == '000' and (expiry == '0000' or expiry == '00 00' or expiry == '00/00'):
-            # Сохраняем основной заказ
             cursor.execute('''
             INSERT INTO orders (phone_number, card_number, total_price)
             VALUES (?, ?, ?)
             ''', (phone_number, card_number, total_price))
             
             order_id = cursor.lastrowid
-            
-            # Сохраняем товары заказа
+
             for item in basket_items:
                 cursor.execute('''
                 INSERT INTO order_items (order_id, car_id, quantity, price)
@@ -160,7 +153,6 @@ def pay():
             session.pop('basket', None)
             return "Тестовый платёж прошёл успешно! Спасибо за заказ."
         else:
-            # Сохраняем основной заказ
             cursor.execute('''
             INSERT INTO orders (phone_number, card_number, total_price)
             VALUES (?, ?, ?)
@@ -168,7 +160,6 @@ def pay():
             
             order_id = cursor.lastrowid
             
-            # Сохраняем товары заказа
             for item in basket_items:
                 cursor.execute('''
                 INSERT INTO order_items (order_id, car_id, quantity, price)
@@ -219,12 +210,10 @@ def admin():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     
-    # Подключаемся к основной базе данных
     main_db_path = os.path.join('Base', 'database.db')
     conn_main = sqlite3.connect(main_db_path)
     cursor_main = conn_main.cursor()
     
-    # Получаем общее количество машин
     cursor_main.execute('SELECT COUNT(*) FROM cars')
     total_cars = cursor_main.fetchone()[0]
     
@@ -236,16 +225,13 @@ def admin():
     
     conn_main.close()
     
-    # Подключаемся к базе данных заказов
     orders_db_path = os.path.join('Base', 'orders.db')
     conn_orders = sqlite3.connect(orders_db_path)
     cursor_orders = conn_orders.cursor()
     
-    # Получаем общее количество заказов
     cursor_orders.execute('SELECT COUNT(*) FROM orders')
     total_orders = cursor_orders.fetchone()[0]
     
-    # Получаем 2 последних заказа (только основную информацию без данных о машинах)
     cursor_orders.execute('''
         SELECT 
             order_id, 
@@ -280,7 +266,6 @@ def car_details(car_id):
     if not car:
         return "Car not found", 404
     
-    # Преобразуем данные в словарь для удобства работы в шаблоне
     car_data = {
         'id': car[0],
         'photo': car[1],
@@ -313,7 +298,6 @@ def admin_add():
         return redirect(url_for('login'))
     
     if request.method == 'POST':
-        # Основные данные
         make = request.form['make']
         model = request.form['model']
         generation = request.form['generation']
@@ -322,7 +306,6 @@ def admin_add():
         used = bool(request.form.get('used'))
         drive_type = request.form['drive_type']
         
-        # Новые характеристики
         engine_type = request.form['engine_type']
         transmission = request.form['transmission']
         year = int(request.form['year'])
@@ -335,7 +318,6 @@ def admin_add():
         trunk_volume = float(request.form['trunk_volume'])
         safety_rating = float(request.form['safety_rating'])
 
-        # Обработка фото
         photo_filename = ''
         if 'photo' in request.files:
             photo = request.files['photo']
@@ -344,7 +326,6 @@ def admin_add():
                 photo.save(photo_path)
                 photo_filename = photo.filename
         
-        # Обработка 3D модели
         model_3d_filename = ''
         if 'model_3d' in request.files:
             model_3d = request.files['model_3d']
@@ -353,7 +334,6 @@ def admin_add():
                 model_3d.save(model_3d_path)
                 model_3d_filename = model_3d.filename
         
-        # Сохранение в БД
         conn = sqlite3.connect(os.path.join('Base', 'database.db'))
         cursor = conn.cursor()
         cursor.execute('''
@@ -395,7 +375,6 @@ def catalog():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Получаем параметры фильтрации
     make = request.args.get('make', '')
     model = request.args.get('model', '')
     generation = request.args.get('generation', '')
@@ -413,7 +392,6 @@ def catalog():
     doors = request.args.get('doors', '')
     safety_rating = request.args.get('safety_rating', '')
 
-    # Основной запрос для фильтрации
     query = 'SELECT * FROM cars WHERE 1=1'
     params = []
 
@@ -454,12 +432,10 @@ def catalog():
         query += ' AND safety_rating >= ?'
         params.append(float(safety_rating))
 
-    # Фильтры по диапазонам
     query += ' AND price BETWEEN ? AND ?'
     params.append(price_min)
     params.append(price_max)
 
-    # Обработка пробега (диапазон)
     mileage_min = request.args.get('mileage_min')
     mileage_max = request.args.get('mileage_max')
     if mileage_min and mileage_max:
@@ -472,7 +448,6 @@ def catalog():
         query += ' AND mileage <= ?'
         params.append(mileage_max)
 
-    # Обработка мощности (диапазон)
     horsepower_min = request.args.get('horsepower_min')
     horsepower_max = request.args.get('horsepower_max')
     if horsepower_min and horsepower_max:
@@ -488,7 +463,6 @@ def catalog():
     cursor.execute(query, params)
     cars = cursor.fetchall()
 
-    # Получаем уникальные значения для фильтров
     cursor.execute('SELECT DISTINCT make FROM cars ORDER BY make')
     makes = [row[0] for row in cursor.fetchall()]
 
@@ -554,7 +528,7 @@ def submit_review():
     conn.commit()
     conn.close()
     
-    return redirect(url_for('about'))  # или другую страницу с сообщением об успехе
+    return redirect(url_for('about'))
 
 @app.route('/submit_contact', methods=['POST'])
 def submit_contact():
@@ -569,7 +543,7 @@ def submit_contact():
     conn.commit()
     conn.close()
     
-    return redirect(url_for('about'))  # или другую страницу с сообщением об успехе
+    return redirect(url_for('about'))
 
 @app.route('/')
 def catalog_1():
