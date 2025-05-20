@@ -765,21 +765,6 @@
         </div>
     </div>
 
-    <h2 class="feedback-form-title scroll-animate animate-from-bottom">Оставить отзыв</h2>
-    <form class="feedback-form scroll-animate animate-from-bottom" action="/submit_review" method="POST">
-        <input type="text" name="name" placeholder="Ваше имя" required>
-        <textarea name="review" placeholder="Ваш отзыв" rows="4" required></textarea>
-        <label for="rating">Рейтинг:</label>
-        <select name="rating" required>
-            <option value="5">5 — Отлично</option>
-            <option value="4">4 — Хорошо</option>
-            <option value="3">3 — Удовлетворительно</option>
-            <option value="2">2 — Плохо</option>
-            <option value="1">1 — Ужасно</option>
-        </select>
-        <button type="submit">Отправить</button>
-    </form>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const animateElements = document.querySelectorAll('.scroll-animate');

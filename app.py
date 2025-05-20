@@ -151,7 +151,7 @@ def pay():
             conn.close()
             
             session.pop('basket', None)
-            return "Тестовый платёж прошёл успешно! Спасибо за заказ."
+            return redirect(url_for('comments'))
         else:
             cursor.execute('''
             INSERT INTO orders (phone_number, card_number, total_price)
@@ -170,7 +170,7 @@ def pay():
             conn.close()
             
             session.pop('basket', None)
-            return "платёж прошёл успешно! Спасибо за заказ."
+            return redirect(url_for('comments'))
 
     return render_template('pay.html', basket_items=basket_items, total_price=total_price)
 
@@ -291,6 +291,10 @@ def car_details(car_id):
     }
     
     return render_template('details.html', car=car_data)
+
+@app.route('/comments')
+def comments():
+    return render_template('comment.html')
 
 @app.route('/admin/add', methods=['GET', 'POST'])
 def admin_add():
