@@ -34,7 +34,7 @@ def init_db():
             trunk_volume REAL,
             safety_rating REAL,
             model_3d TEXT,
-            statuc TEXT NOT NULL
+            statuc TEXT
         )
     ''')
     
@@ -76,7 +76,8 @@ def init_order_db():
         order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         phone_number TEXT,
         card_number TEXT,
-        total_price REAL
+        total_price REAL,
+        status TEXT DEFAULT 'new'
     )
     ''')
     
@@ -90,6 +91,8 @@ def init_order_db():
         FOREIGN KEY (order_id) REFERENCES orders(order_id)
     )
     ''')
+    conn.commit()
+    conn.close()
     
     conn.commit()
     conn.close()
@@ -127,8 +130,6 @@ def pay():
         cvv = request.form.get('cvv')
         expiry = request.form.get('expiry')
         phone_number = request.form.get('phone_number')
-
-        init_order_db()
         
         conn = sqlite3.connect(os.path.join('Base', 'orders.db'))
         cursor = conn.cursor()
@@ -176,6 +177,8 @@ def pay():
 
 @app.route('/admin/comments')
 def admin_comments():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     conn = sqlite3.connect('Base/database.db')
     cursor = conn.cursor()
     cursor.execute("SELECT name, comment, rating FROM reviews")
@@ -185,6 +188,8 @@ def admin_comments():
 
 @app.route('/admin/contact')
 def contact():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     conn = sqlite3.connect('Base/database.db')
     cursor = conn.cursor()
     cursor.execute("SELECT id, phone, status, created_at FROM contacts ORDER BY created_at DESC")
@@ -194,6 +199,8 @@ def contact():
 
 @app.route('/update_contact_status', methods=['POST'])
 def update_contact_status():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     contact_id = request.form.get('contact_id')
     new_status = request.form.get('new_status')
     
@@ -204,6 +211,99 @@ def update_contact_status():
     conn.close()
     
     return redirect('/admin/contact')
+
+@app.route('/admin/orders')
+def admin_orders():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    try:
+        orders_conn = sqlite3.connect('Base/orders.db')
+        cars_conn = sqlite3.connect('Base/database.db')
+        
+        orders_cursor = orders_conn.cursor()
+        cars_cursor = cars_conn.cursor()
+
+        orders_cursor.execute("""
+            SELECT order_id, order_date, phone_number, 
+                   card_number, total_price, status 
+            FROM orders 
+            ORDER BY order_date DESC
+        """)
+        orders = orders_cursor.fetchall()
+        
+        orders_with_items = []
+        for order in orders:
+            order_id = order[0]
+            orders_cursor.execute("""
+                SELECT item_id, car_id, quantity, price
+                FROM order_items 
+                WHERE order_id = ?
+            """, (order_id,))
+            items = orders_cursor.fetchall()
+            
+            items_with_car_info = []
+            for item in items:
+                car_id = item[1]
+                cars_cursor.execute("""
+                    SELECT make, model, generation 
+                    FROM cars 
+                    WHERE id = ?
+                """, (car_id,))
+                car_info = cars_cursor.fetchone()
+                
+                if car_info:
+                    items_with_car_info.append((
+                        item[0],  # item_id
+                        item[1],  # car_id
+                        item[2],  # quantity
+                        item[3],  # price
+                        car_info[0],  # make
+                        car_info[1],  # model
+                        car_info[2]   # generation
+                    ))
+                else:
+                    items_with_car_info.append((
+                        item[0], item[1], item[2], item[3],
+                        "Неизвестно", "Неизвестно", ""
+                    ))
+            
+            orders_with_items.append((order, items_with_car_info))
+        
+        return render_template('admin_orders.html', orders=orders_with_items)
+        
+    except Exception as e:
+        print(f"Error accessing database: {e}")
+        return "Error accessing database", 500
+        
+    finally:
+        if 'orders_conn' in locals():
+            orders_conn.close()
+        if 'cars_conn' in locals():
+            cars_conn.close()
+
+@app.route('/update_order_status', methods=['POST'])
+def update_order_status():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    order_id = request.form.get('order_id')
+    new_status = request.form.get('new_status')
+    
+    conn = None
+    try:
+        conn = sqlite3.connect('Base/orders.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE orders SET status = ? WHERE order_id = ?", (new_status, order_id))
+        conn.commit()
+        
+    except Exception as e:
+        print(f"Error updating order status: {e}")
+        return "Error updating order status", 500
+        
+    finally:
+        if conn:
+            conn.close()
+    
+    return redirect('/admin/orders')
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():

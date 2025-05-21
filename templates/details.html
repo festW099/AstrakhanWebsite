@@ -353,7 +353,7 @@
         <div class="specs-title">3D МОДЕЛЬ</div>
         <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <model-viewer 
-            src="{{ url_for('static', filename='models/future_car.glb') }}" 
+            src="/static/models/{{ car.model_3d }}" 
             alt="3D модель"
             ar
             auto-rotate

@@ -1,0 +1,116 @@
+{% extends "admin_pattern.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-dark mb-4">Заказы</h2>
+    <div class="row">
+        {% for order, items in orders %}
+        <div class="col-md-6 mb-4">
+            <div class="card border-dark shadow-sm">
+                <div class="card-body bg-light">
+                    <h5 class="card-title text-dark">Заказ #{{ order[0] }}</h5>
+                    <hr class="border-dark">
+                    <div class="card-text text-dark mb-3">
+                        <p><strong>Дата:</strong> {{ order[1] }}</p>
+                        <p><strong>Телефон:</strong> {{ order[2] }}</p>
+                        <p><strong>Карта:</strong> **** **** **** {{ order[3][-4:] }}</p>
+                        <p><strong>Сумма:</strong> {{ "%.2f"|format(order[4]) }} ₽</p>
+                        
+                        <p>
+                            <strong>Статус:</strong> 
+                            <span class="badge rounded-pill 
+                                {% if order[5] == 'new' %}bg-secondary
+                                {% elif order[5] == 'processing' %}bg-primary
+                                {% elif order[5] == 'shipped' %}bg-info
+                                {% elif order[5] == 'completed' %}bg-success
+                                {% elif order[5] == 'cancelled' %}bg-danger
+                                {% else %}bg-dark{% endif %}">
+                                {% if order[5] == 'new' %}Новый
+                                {% elif order[5] == 'processing' %}В обработке
+                                {% elif order[5] == 'shipped' %}Отправлен
+                                {% elif order[5] == 'completed' %}Завершен
+                                {% elif order[5] == 'cancelled' %}Отменен
+                                {% else %}{{ order[5] }}{% endif %}
+                            </span>
+                        </p>
+                        
+                        <div class="mt-3">
+                            <h6>Товары:</h6>
+                            <ul class="list-group">
+                                {% for item in items %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ item[4] }} {{ item[5] }} {{ item[6] }}</strong><br>
+                                        <small>ID: {{ item[1] }} | {{ item[2] }} шт.</small>
+                                    </div>
+                                    <span class="badge bg-dark rounded-pill" style="color: white;">{{ "%.2f"|format(item[3]) }} ₽</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" action="/update_order_status" class="d-flex flex-column gap-2">
+                        <input type="hidden" name="order_id" value="{{ order[0] }}">
+                        
+                        <button type="submit" name="new_status" value="new" 
+                                class="btn {% if order[5] == 'new' %}btn-secondary{% else %}btn-outline-secondary{% endif %} rounded text-start">
+                            Новый
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="processing" 
+                                class="btn {% if order[5] == 'processing' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded text-start">
+                            В обработке
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="shipped" 
+                                class="btn {% if order[5] == 'shipped' %}btn-info{% else %}btn-outline-info{% endif %} rounded text-start">
+                            Отправлен
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="completed" 
+                                class="btn {% if order[5] == 'completed' %}btn-success{% else %}btn-outline-success{% endif %} rounded text-start">
+                            Завершен
+                        </button>
+                        
+                        <button type="submit" name="new_status" value="cancelled" 
+                                class="btn {% if order[5] == 'cancelled' %}btn-danger{% else %}btn-outline-danger{% endif %} rounded text-start">
+                            Отменить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+        border-radius: 8px;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-outline-secondary:hover { background-color: #6c757d; color: white; }
+    .btn-outline-primary:hover { background-color: #0d6efd; color: white; }
+    .btn-outline-info:hover { background-color: #0dcaf0; color: white; }
+    .btn-outline-success:hover { background-color: #198754; color: white; }
+    .btn-outline-danger:hover { background-color: #dc3545; color: white; }
+    .badge {
+        font-weight: 500;
+        padding: 5px 10px;
+    }
+    .btn {
+        margin-top: 5px;
+        padding: 8px 12px;
+        transition: all 0.2s;
+    }
+    .list-group-item {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
